@@ -1,0 +1,143 @@
+// ===== РАСПИСАНИЕ УРОКОВ =====
+let lessonDuration = 45; // По умолчанию 45 минут
+
+const baseStartTime = 480; // 8:00 в минутах
+
+// Фиксированное расписание для 45 минут
+const lessonTimesFixed = [
+    { num: 1, start: "8:00", startMinutes: 480, end: "8:45", endMinutes: 525 },
+    { num: 2, start: "8:50", startMinutes: 530, end: "9:35", endMinutes: 575 },
+    { num: 3, start: "9:40", startMinutes: 580, end: "10:25", endMinutes: 625 },
+    { num: 4, start: "10:40", startMinutes: 640, end: "11:25", endMinutes: 685 },
+    { num: 5, start: "11:30", startMinutes: 690, end: "12:15", endMinutes: 735 },
+    { num: 6, start: "12:20", startMinutes: 740, end: "13:05", endMinutes: 785 }
+];
+
+// Вычисляем расписание на основе длительности (для 40 и 35 минут)
+function generateLessonTimes() {
+    if (lessonDuration === 45) {
+        return lessonTimesFixed;
+    }
+
+    const lessons = [];
+    let currentTime = baseStartTime;
+    let breakDuration = 5; // Перемена 5 минут
+
+    for (let i = 1; i <= 6; i++) {
+        lessons.push({
+            num: i,
+            start: formatTime(currentTime),
+            startMinutes: currentTime,
+            end: formatTime(currentTime + lessonDuration),
+            endMinutes: currentTime + lessonDuration
+        });
+        
+        currentTime += lessonDuration + breakDuration;
+    }
+
+    return lessons;
+}
+
+function formatTime(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+}
+
+let lessonTimes = generateLessonTimes();
+
+const weekSchedule = {
+    0: {
+        name: "Понедельник",
+        lessons: [
+            "Физкультура",
+            "Математика",
+            "Химия",
+            "Русская литература",
+            "Русский язык",
+            "Физика"
+        ]
+    },
+    1: {
+        name: "Вторник",
+        lessons: [
+            "Математика",
+            "История",
+            "Химия",
+            "Физика",
+            "Иностранный язык",
+            "Кыргыз"
+        ]
+    },
+    2: {
+        name: "Среда",
+        lessons: [
+            "Биология",
+            "ДП",
+            "Математика",
+            "Русская литература",
+            "ДП"
+        ]
+    },
+    3: {
+        name: "Четверг",
+        lessons: [
+            "Математика",
+            "Кыргыз тили",
+            "Русский язык",
+            "История",
+            "Физкультура",
+            "Кыргызска литература"
+        ]
+    },
+    4: {
+        name: "Пятница",
+        lessons: [
+            "Кыргызский язык",
+            "Физика",
+            "Русская литература",
+            "География",
+            "Кыргызская литература",
+            "ЧИО"
+        ]
+    },
+    5: {
+        name: "Суббота",
+        lessons: []
+    },
+    6: {
+        name: "Воскресенье",
+        lessons: []
+    }
+};
+
+const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
+
+// ===== СНЕГ =====
+const canvas = document.getElementById('snowCanvas');
+const ctx = canvas.getContext('2d');
+
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+});
+
+const snowflakes = [];
+const maxFlakes = 100;
+
+for (let i = 0; i < maxFlakes; i++) {
+    snowflakes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 3 + 1,
+        speed: Math.random() * 1 + 0.5,
+        opacity: Math.random() * 0.5 + 0.3
+    });
+}
+
+function drawSnow() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "rgba(255,*
