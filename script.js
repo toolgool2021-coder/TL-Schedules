@@ -209,12 +209,35 @@ document.querySelectorAll('.duration-btn').forEach(btn => {
 
 // ===== СКАЧИВАНИЕ ОФФЛАЙН ВЕРСИИ =====
 document.getElementById('downloadOfflineBtn').addEventListener('click', function() {
-    const link = document.createElement('a');
-    link.href = 'download/offline.html';
-    link.download = 'TL-Schedules-Offline.html';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Пытаемся загрузить файл с GitHub
+    fetch('https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/download/offline.html')
+        .then(response => {
+            if (!response.ok) {
+                // Если не получилось с GitHub, пробуем локальный путь
+                throw new Error('GitHub недоступен');
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Создаем Blob и скачи��аем
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'TL-Schedules-Offline.html';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        })
+        .catch(error => {
+            // Если GitHub не работает, пробуем локально
+            const link = document.createElement('a');
+            link.href = 'download/offline.html';
+            link.download = 'TL-Schedules-Offline.html';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
 });
 
 // ===== ФУНКЦИИ ДЛЯ РАСПИСАНИЯ И ТАЙМЕРА =====
