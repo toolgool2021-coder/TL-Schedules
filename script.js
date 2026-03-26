@@ -84,7 +84,7 @@ const weekSchedule = {
     },
     4: {
         name: "Пятница",
-        lessons: ["Кыргызский язык", "Физика", "Русская литература", "Геог��афия", "Кыргызская литература", "ЧИО"]
+        lessons: ["Кыргызский язык", "Физика", "Русская литература", "География", "Кыргызская литература", "ЧИО"]
     },
     5: { name: "Суббота", lessons: [] },
     6: { name: "Воскресенье", lessons: [] }
@@ -160,7 +160,7 @@ function openTeacherModal(lessonName) {
     }
 
     document.getElementById('teacherName').textContent = teacher.name || '-';
-    document.getElementById('teacherSource').textContent = 'ℹ️ взято с Э-күндөлүк, поэтому информация может быть не точная';
+    document.getElementById('teacherSource').textContent = 'взято с Э-күндөлүк, поэтому информация может быть не точная';
     document.getElementById('teacherCabinet').textContent = `🚪 Кабинет: ${teacher.cabinet || '-'}`;
     document.getElementById('teacherSubject').textContent = `📚 Предмет: ${lessonName}`;
     
@@ -168,19 +168,19 @@ function openTeacherModal(lessonName) {
     const buttonsEl = document.getElementById('teacherButtons');
     
     if (teacher.phone) {
-        phoneEl.textContent = `☎️ Телефон: ${teacher.phone}`;
+        phoneEl.textContent = `☎️ ${teacher.phone}`;
         const phoneClean = teacher.phone.replace(/\D/g, '');
         buttonsEl.innerHTML = `
             <a href="tel:+${phoneClean}" class="teacher-btn-call" title="Позвонить">
-                <i class="fas fa-phone"></i> Звонок
+                <i class="fas fa-phone"></i>
             </a>
             <a href="https://wa.me/${phoneClean}" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
-                <i class="fab fa-whatsapp"></i> WhatsApp
+                <i class="fab fa-whatsapp"></i>
             </a>
         `;
     } else {
         phoneEl.textContent = `☎️ -`;
-        buttonsEl.innerHTML = '<span class="teacher-btn-disabled"><i class="fas fa-phone"></i> Нет номера</span>';
+        buttonsEl.innerHTML = '<span class="teacher-btn-disabled"><i class="fas fa-phone"></i></span>';
     }
     
     teacherModal.style.display = 'block';
