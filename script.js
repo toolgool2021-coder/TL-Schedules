@@ -42,6 +42,29 @@ function formatTime(minutes) {
 
 let lessonTimes = generateLessonTimes();
 
+// ===== БАЗА ДАННЫХ УЧИТЕЛЕЙ =====
+const teachersDatabase = {
+    "Физкультура": { name: "Моношева Айгерим", cabinet: "спорт зал", phone: "+996 (312) 123-45-67" },
+    "Математика": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996 (312) 234-56-78" },
+    "Химия": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996 (312) 234-56-78" },
+    "Русская литература": { name: "Нурумова Елена", cabinet: "43", phone: "+996 (312) 345-67-89" },
+    "Русский язык": { name: "Нурумова Елена", cabinet: "43", phone: "+996 (312) 345-67-89" },
+    "Физика": { name: "Рубцов Андрей", cabinet: "39", phone: "+996 (312) 456-78-90" },
+    "История": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996 (312) 567-89-01" },
+    "Иностранный язык": { name: "Темирова Элес", cabinet: "35", phone: "+996 (312) 678-90-12" },
+    "Кыргыз": { name: "Томоева Гульзат", cabinet: "37", phone: "+996 (312) 789-01-23" },
+    "Биология": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996 (312) 234-56-78" },
+    "ДП": { name: "Томоева Гульзат", cabinet: "37", phone: "+996 (312) 789-01-23" },
+    "Кыргыз тили": { name: "Томоева Гульзат", cabinet: "37", phone: "+996 (312) 789-01-23" },
+    "Кыргызска литература": { name: "Томоева Гульзат", cabinet: "37", phone: "+996 (312) 789-01-23" },
+    "Кыргызский язык": { name: "Томоева Гульзат", cabinet: "37", phone: "+996 (312) 789-01-23" },
+    "Кыргызская литература": { name: "Томоева Гульзат", cabinet: "37", phone: "+996 (312) 789-01-23" },
+    "География": { name: "Эсенгулова Жыпаргул", cabinet: "41", phone: "+996 (312) 890-12-34" },
+    "Человек и общество": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996 (312) 567-89-01" },
+    "ЧИО": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996 (312) 567-89-01" },
+    "Астрономия": { name: "Рубцов Андрей", cabinet: "39", phone: "+996 (312) 456-78-90" }
+};
+
 const weekSchedule = {
     0: {
         name: "Понедельник",
@@ -122,7 +145,41 @@ const modal = document.getElementById('noteModal');
 const noteText = document.getElementById('noteText');
 const saveNoteBtn = document.getElementById('saveNoteBtn');
 const closeNoteBtn = document.getElementById('closeNoteBtn');
-const closeBtn = document.querySelector('.close');
+const closeBtn = document.querySelector('#noteModal .close');
+
+// ===== МОДАЛЬНОЕ ОКНО ДЛЯ ПОДРОБНОСТЕЙ УЧИТЕЛЯ =====
+const teacherModal = document.getElementById('teacherModal');
+const teacherCloseBtn = document.querySelector('#teacherModal .close');
+
+function openTeacherModal(lessonName) {
+    const teacher = teachersDatabase[lessonName];
+    
+    if (!teacher) {
+        alert('Информация о преподавателе не найдена');
+        return;
+    }
+
+    document.getElementById('teacherName').textContent = teacher.name;
+    document.getElementById('teacherCabinet').textContent = `🚪 Кабинет: ${teacher.cabinet}`;
+    document.getElementById('teacherSubject').textContent = `📚 Предмет: ${lessonName}`;
+    document.getElementById('teacherPhone').textContent = `☎️ Телефон: ${teacher.phone}`;
+    
+    teacherModal.style.display = 'block';
+}
+
+function closeTeacherModal() {
+    teacherModal.style.display = 'none';
+}
+
+if (teacherCloseBtn) {
+    teacherCloseBtn.addEventListener('click', closeTeacherModal);
+}
+
+window.addEventListener('click', (event) => {
+    if (event.target === teacherModal) {
+        closeTeacherModal();
+    }
+});
 
 let currentNoteKey = null;
 let notes = JSON.parse(localStorage.getItem('tlScheduleNotes')) || {};
@@ -209,17 +266,14 @@ document.querySelectorAll('.duration-btn').forEach(btn => {
 
 // ===== СКАЧИВАНИЕ ОФФЛАЙН ВЕРСИИ =====
 document.getElementById('downloadOfflineBtn').addEventListener('click', function() {
-    // Пытаемся загрузить файл с GitHub
     fetch('https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/download/offline.html')
         .then(response => {
             if (!response.ok) {
-                // Если не получилось с GitHub, пробуем локальный путь
                 throw new Error('GitHub недоступен');
             }
             return response.text();
         })
         .then(html => {
-            // Создаем Blob и скачиваем
             const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -230,7 +284,6 @@ document.getElementById('downloadOfflineBtn').addEventListener('click', function
             URL.revokeObjectURL(link.href);
         })
         .catch(error => {
-            // Если GitHub не работает, пробуем локально
             const link = document.createElement('a');
             link.href = 'download/offline.html';
             link.download = 'TL-Schedules-Offline.html';
@@ -375,7 +428,7 @@ function updateTodaySchedule() {
 
         scheduleItem.innerHTML = `
             <div class="lesson-number">Урок ${lesson.num}</div>
-            <div class="lesson-name">${lessonName}</div>
+            <div class="lesson-name" style="cursor: pointer;">${lessonName}</div>
             <div class="lesson-time">${lesson.start} - ${lesson.end}</div>
             <div class="note-controls">
                 ${hasNote ? `<button class="note-view-btn" data-day="${dayOfWeek}" data-lesson="${lesson.num}">👁️</button>` : ''}
@@ -383,6 +436,12 @@ function updateTodaySchedule() {
                 ${hasNote ? `<button class="note-delete-btn" data-day="${dayOfWeek}" data-lesson="${lesson.num}">✕</button>` : ''}
             </div>
         `;
+
+        const lessonNameEl = scheduleItem.querySelector('.lesson-name');
+        lessonNameEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openTeacherModal(lessonName);
+        });
 
         const noteEditBtn = scheduleItem.querySelector('.note-edit-btn');
         noteEditBtn.addEventListener('click', (e) => {
@@ -441,7 +500,7 @@ function updateFullSchedule() {
                     <div class="day-lesson">
                         <div class="day-lesson-number">${i + 1}</div>
                         <div class="day-lesson-info">
-                            <div class="day-lesson-name">${lessonName}</div>
+                            <div class="day-lesson-name" style="cursor: pointer;">${lessonName}</div>
                             <div class="day-lesson-time">${lessonTime.start} - ${lessonTime.end}</div>
                         </div>
                         <div class="day-note-controls">
@@ -458,6 +517,14 @@ function updateFullSchedule() {
             <div class="day-name">${dayInfo.name}</div>
             <div class="day-lessons">${lessonsHtml}</div>
         `;
+
+        const lessonNames = dayDiv.querySelectorAll('.day-lesson-name');
+        lessonNames.forEach((el, index) => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openTeacherModal(dayInfo.lessons[index]);
+            });
+        });
 
         const editBtns = dayDiv.querySelectorAll('.day-note-edit');
         editBtns.forEach(btn => {
