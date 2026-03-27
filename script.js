@@ -316,7 +316,7 @@ document.getElementById('downloadOfflineBtn').addEventListener('click', function
 function isWeekend() {
     const now = new Date();
     const dayOfWeek = now.getDay();
-    return dayOfWeek === 5 || dayOfWeek === 6;
+    return dayOfWeek === 6;
 }
 
 function getCurrentLessonInfo() {
