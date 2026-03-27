@@ -200,6 +200,13 @@ html, body {
     margin-top: 5px;
 }
 
+.next-lesson {
+    font-size: 14px;
+    color: #a855f7;
+    text-shadow: 0 0 5px #a855f7;
+    margin-top: 5px;
+}
+
 /* ===== ПЕРЕКЛЮЧАТЕЛЬ ДЛИТЕЛЬНОСТИ УРОКОВ ===== */
 .duration-control {
     text-align: center;
@@ -1208,6 +1215,10 @@ html, body {
     }
 
     .lesson-status {
+        font-size: 12px;
+    }
+
+    .next-lesson {
         font-size: 12px;
     }
 
