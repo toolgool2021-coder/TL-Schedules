@@ -1,112 +1,154 @@
-// ===== РАСПИСАНИЕ УРОКОВ =====
-let lessonDuration = 45;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TL Schedules - Расписание Уроков</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const baseStartTime = 480;
+<canvas id="snowCanvas"></canvas>
 
-const lessonTimesFixed = [
-    { num: 1, start: "8:00", startMinutes: 480, end: "8:45", endMinutes: 525 },
-    { num: 2, start: "8:50", startMinutes: 530, end: "9:35", endMinutes: 575 },
-    { num: 3, start: "9:40", startMinutes: 580, end: "10:25", endMinutes: 625 },
-    { num: 4, start: "10:40", startMinutes: 640, end: "11:25", endMinutes: 685 },
-    { num: 5, start: "11:30", startMinutes: 690, end: "12:15", endMinutes: 735 },
-    { num: 6, start: "12:20", startMinutes: 740, end: "13:05", endMinutes: 785 }
-];
+<div class="container">
 
-function generateLessonTimes() {
-    if (lessonDuration === 45) {
-        return lessonTimesFixed;
-    }
+    <!-- ИНФОРМАЦИОННЫЙ БЛОК (БЕТА ВЕРСИЯ) -->
+    <div class="beta-info-block">
+        <div class="beta-header">
+            <span class="beta-badge">[ БЕТА ВЕРСИЯ ]</span>
+        </div>
+        <p class="beta-description">
+            Данная версия находится в стадии тестирования и использует системное время и дату устройства пользователя для выполнения расчётов, при этом обработка данных осуществляется локально через конфигурационные параметры без обращения к внешним сервисам, что обеспечивает автономность работы, однако в связи с этапом разработки возможны неточности, отклонения и нестабильность отдельных функций, вследствие чего итоговые значения могут не полностью соответствовать фактическому расписанию, и, используя данный сервис, пользователь принимает, что все результаты носят вспомогательный характер, а использование осуществляется на собственный риск без гарантий абсолютной точности.
+        </p>
+        <button id="downloadOfflineBtn" class="download-offline-btn">
+            <i class="fas fa-download"></i> Скачать оффлайн версию
+        </button>
+    </div>
 
-    const lessons = [];
-    let currentTime = baseStartTime;
-    let breakDuration = 5;
+    <!-- НАЗВАНИЕ ПРОЕКТА С ЛОГОТИПОМ -->
+    <div class="project-header">
+        <div class="logo-container">
+            <img src="Image/icon.png" alt="TL Schedules Logo" class="project-logo">
+        </div>
+        <h1 class="project-title">TL Schedules</h1>
+        <p class="project-subtitle">Расписание занятий в реальном времени</p>
+    </div>
+    
+    <!-- ВЕРХНЯЯ ИНФОРМАЦИЯ -->
+    <div class="info-section">
+        <div class="date-display">
+            <p class="current-date" id="currentDate">00.00.0000</p>
+            <p class="current-day" id="currentDay">День</p>
+            <p class="current-lesson" id="currentLesson">Урок загружается...</p>
+            <p class="lesson-status" id="lessonStatus"></p>
+            <p class="next-lesson" id="nextLesson"></p>
+        </div>
+    </div>
 
-    for (let i = 1; i <= 6; i++) {
-        lessons.push({
-            num: i,
-            start: formatTime(currentTime),
-            startMinutes: currentTime,
-            end: formatTime(currentTime + lessonDuration),
-            endMinutes: currentTime + lessonDuration
-        });
-        currentTime += lessonDuration + breakDuration;
-    }
-    return lessons;
-}
+    <!-- ПЕРЕКЛЮЧАТЕЛЬ ДЛИТЕЛЬНОСТИ УРОКОВ -->
+    <div class="duration-control">
+        <p class="duration-label">Длительность урока:</p>
+        <div class="duration-buttons">
+            <button class="duration-btn active" data-duration="45">45 мин</button>
+            <button class="duration-btn" data-duration="40">40 мин</button>
+            <button class="duration-btn" data-duration="35">35 мин</button>
+        </div>
+    </div>
 
-function formatTime(minutes) {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-}
+    <!-- ЦЕНТРАЛЬНЫЙ ТАЙМЕР -->
+    <div class="timer-section">
+        <div class="timer-display">
+            <span class="timer-value" id="timerValue">00:00:00</span>
+        </div>
+        <p class="timer-label" id="timerLabel">Осталось до конца урока</p>
+    </div>
 
-let lessonTimes = generateLessonTimes();
+    <!-- РАСПИСАНИЕ УРОКОВ -->
+    <div class="schedule-section">
+        <h2 id="scheduleTitle">Расписание на сегодня</h2>
+        <div class="schedule-list" id="scheduleList">
+            <!-- Заполняется JavaScript -->
+        </div>
+    </div>
 
-// ===== БАЗА ДАННЫХ УЧИТЕЛЕЙ =====
-const teachersDatabase = {
-    "Физкультура": { name: "Моношева Айгерим", cabinet: "спорт зал", phone: null },
-    "Математика": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996558337747" },
-    "Химия": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996558337747" },
-    "Русская литература": { name: "Нурумова Елена", cabinet: "43", phone: "+996554603042" },
-    "Русский язык": { name: "Нурумова Елена", cabinet: "43", phone: "+996554603042" },
-    "Физика": { name: "Рубцов Андрей", cabinet: "39", phone: "+996776979884" },
-    "История": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996505904065" },
-    "Иностранный язык": { name: "Темирова Элес", cabinet: "35", phone: "+996708681464" },
-    "Кыргыз": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
-    "Биология": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996554202642" },
-    "ДП": { name: "Томоева Гульзат", cabinet: "37", phone: "+996500703906" },
-    "Кыргыз тили": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
-    "Кыргызска литература": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
-    "Кыргызский язык": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
-    "Кыргызская литература": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
-    "География": { name: "Эсенгулова Жыпаргул", cabinet: "41", phone: "+996559312013" },
-    "Человек и общество": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996505904065" },
-    "ЧИО": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996505904065" },
-    "Астрономия": { name: "Рубцов Андрей", cabinet: "39", phone: "+996776979884" }
-};
+    <!-- ПОЛНОЕ РАСПИСАНИЕ НА НЕДЕЛЮ -->
+    <div class="full-schedule-section">
+        <h2>Полное расписание</h2>
+        <div class="week-schedule" id="weekSchedule">
+            <!-- Заполняется JavaScript -->
+        </div>
+    </div>
 
-const weekSchedule = {
-    0: {
-        name: "Понедельник",
-        lessons: ["Физкультура", "Математика", "Химия", "Русская литература", "Русский язык", "Физика"]
-    },
-    1: {
-        name: "Вторник",
-        lessons: ["Математика", "История", "Химия", "Физика", "Иностранный язык", "Кыргыз"]
-    },
-    2: {
-        name: "Среда",
-        lessons: ["Биология", "ДП", "Математика", "Русская литература", "ДП"]
-    },
-    3: {
-        name: "Четверг",
-        lessons: ["Математика", "Кыргыз тили", "Русский язык", "История", "Физкультура", "Кыргызска литература"]
-    },
-    4: {
-        name: "Пятница",
-        lessons: ["Иностранный язык", "Физика", "Русская литература", "География", "Кыргызская литература", "ЧИО"]
-    },
-    5: { name: "Суббота", lessons: [] },
-    6: { name: "Воскресенье", lessons: [] }
-};
+    <!-- СПИСОК ВСЕХ УЧИТЕЛЕЙ -->
+    <div class="teachers-section">
+        <h2>👨‍🏫 Наши преподаватели</h2>
+        <div class="teachers-list">
+            <!-- Карточки учителей... -->
+        </div>
+    </div>
 
-const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
+    <!-- КОНТАКТЫ -->
+    <div class="contact-section">
+        <a href="https://t.me/Toolgool" target="_blank" class="contact-link telegram-link">
+            <i class="fab fa-telegram"></i>
+            <span>Telegram</span>
+        </a>
+        <a href="mailto:Toolgool2021@gmail.com" class="contact-link mail-link">
+            <i class="fas fa-envelope"></i>
+            <span>Email</span>
+        </a>
+    </div>
 
-// ===== СНЕГ =====
-const canvas = document.getElementById('snowCanvas');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
+    <!-- БАГ РЕПОРТ СЕКЦИЯ -->
+    <div class="bug-report-section">
+        <h3>🐛 Нашли баг или неточность?</h3>
+        <p>Сообщите нам об ошибке в приложении, и мы её исправим!</p>
+        <div class="bug-report-buttons">
+            <a href="https://t.me/Toolgool_support_bot" target="_blank" class="bug-report-btn">
+                <i class="fab fa-telegram"></i> Бот поддержки
+            </a>
+            <a href="https://t.me/Toolgool" target="_blank" class="bug-report-btn">
+                <i class="fab fa-telegram"></i> Разработчику
+            </a>
+        </div>
+    </div>
 
-window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-});
+</div>
 
-const snowflakes = [];
-const maxFlakes = 100;
-for (let i = 0; i < maxFlakes; i++) {
-    snowflakes.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r*
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ЗАМЕТОК -->
+<div id="noteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Заметка</h2>
+            <span class="close">&times;</span>
+        </div>
+        <textarea id="noteText" class="note-textarea" placeholder="Введите заметку..."></textarea>
+        <div class="modal-buttons">
+            <button id="saveNoteBtn" class="btn-modal save">Сохранить</button>
+            <button id="closeNoteBtn" class="btn-modal cancel">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПОДРОБНОСТЕЙ УЧИТЕЛЯ -->
+<div id="teacherModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Информация об учителе</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="teacher-info">
+            <p id="teacherName" class="teacher-name"></p>
+            <p id="teacherSource" class="teacher-source"></p>
+            <p id="teacherSubject" class="teacher-subject"></p>
+            <p id="teacherCabinet" class="teacher-cabinet"></p>
+            <p id="teacherPhone" class="teacher-phone"></p>
+            <div id="teacherButtons" class="teacher-modal-buttons"></div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
