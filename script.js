@@ -372,7 +372,13 @@ function updateDisplay() {
         const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
         const lessonName = lessons[lessonInfo.currentLesson.num - 1] || 'Урок';
         document.getElementById('currentLesson').textContent = `Урок ${lessonInfo.currentLesson.num}: ${lessonName}`;
-        statusEl.textContent = '🔴 Сейчас идёт урок';
+                statusEl.textContent = '🔴 Сейчас идёт урок';
+        const nextLesson = getNextLesson(dayOfWeek, lessonInfo.currentLesson.num);
+        if (nextLesson) {
+            document.getElementById('nextLesson').textContent = `Следующий урок: Урок ${nextLesson.num} - ${nextLesson.name}`;
+        } else {
+            document.getElementById('nextLesson').textContent = 'Следующий урок: Домой! 🏠';
+        }
         const endTimeMinutes = lessonInfo.currentLesson.endMinutes;
         const timeLeftMinutes = endTimeMinutes - lessonInfo.currentMinutes;
         updateTimer(timeLeftMinutes);
