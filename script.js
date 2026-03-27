@@ -352,6 +352,18 @@ function getCurrentLessonInfo() {
     return { hasLesson: !!currentLesson, currentLesson, nextLesson, allLessonsFinished, currentMinutes };
 }
 
+// ===== ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СЛЕДУЮЩЕГО УРОКА =====
+function getNextLesson(dayOfWeek, currentLessonNum) {
+    const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
+    if (currentLessonNum < lessons.length) {
+        return {
+            num: currentLessonNum + 1,
+            name: lessons[currentLessonNum]
+        };
+    }
+    return null;
+}
+
 function updateDisplay() {
     const now = new Date();
     const dateStr = now.toLocaleDateString('ru-RU');
@@ -363,11 +375,13 @@ function updateDisplay() {
 
     const lessonInfo = getCurrentLessonInfo();
     const statusEl = document.getElementById('lessonStatus');
+    const nextLessonEl = document.getElementById('nextLesson');
 
     if (isWeekend()) {
         document.getElementById('currentLesson').textContent = '🎉 Выходной день!';
         document.getElementById('timerValue').textContent = '🎉';
         statusEl.textContent = '🌟 Время отдыхать!';
+        nextLessonEl.textContent = 'Отдыхаем! 🏠';
     } else if (lessonInfo.hasLesson && lessonInfo.currentLesson) {
         const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
         const lessonName = lessons[lessonInfo.currentLesson.num - 1] || 'Урок';
@@ -375,9 +389,9 @@ function updateDisplay() {
         statusEl.textContent = '🔴 Сейчас идёт урок';
         const nextLesson = getNextLesson(dayOfWeek, lessonInfo.currentLesson.num);
         if (nextLesson) {
-            document.getElementById('nextLesson').textContent = `Следующий урок: Урок ${nextLesson.num} - ${nextLesson.name}`;
+            nextLessonEl.textContent = `Следующий урок: Урок ${nextLesson.num} - ${nextLesson.name}`;
         } else {
-            document.getElementById('nextLesson').textContent = 'Следующий урок: Домой! 🏠';
+            nextLessonEl.textContent = 'Следующий урок: Домой! 🏠';
         }
         const endTimeMinutes = lessonInfo.currentLesson.endMinutes;
         const timeLeftMinutes = endTimeMinutes - lessonInfo.currentMinutes;
@@ -391,11 +405,18 @@ function updateDisplay() {
         const hours = Math.floor(timeLeftMinutes / 60);
         const mins = Math.floor(timeLeftMinutes % 60);
         statusEl.textContent = `⏳ До начала ${hours > 0 ? hours + 'ч ' : ''}${mins}м`;
+        const nextLesson = getNextLesson(dayOfWeek, lessonInfo.nextLesson.num);
+        if (nextLesson) {
+            nextLessonEl.textContent = `После этого: Урок ${nextLesson.num} - ${nextLesson.name}`;
+        } else {
+            nextLessonEl.textContent = 'После этого: Домой! 🏠';
+        }
         updateTimer(timeLeftMinutes);
     } else if (lessonInfo.allLessonsFinished) {
         document.getElementById('currentLesson').textContent = 'Все уроки закончились! 🎉';
         document.getElementById('timerValue').textContent = '✨';
         statusEl.textContent = '✅ Занятия закончены';
+        nextLessonEl.textContent = 'Следующий урок: Домой! 🏠';
     }
 
     updateTodaySchedule();
@@ -412,18 +433,6 @@ function updateTimer(minutes) {
     const secs = Math.floor((minutes % 1) * 60);
     const timerStr = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     document.getElementById('timerValue').textContent = timerStr;
-}
-
-// ===== ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СЛЕДУЮЩЕГО УРОКА =====
-function getNextLesson(dayOfWeek, currentLessonNum) {
-    const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
-    if (currentLessonNum < lessons.length) {
-        return {
-            num: currentLessonNum + 1,
-            name: lessons[currentLessonNum]
-        };
-    }
-    return null;
 }
 
 function updateTodaySchedule() {
