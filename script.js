@@ -372,7 +372,7 @@ function updateDisplay() {
         const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
         const lessonName = lessons[lessonInfo.currentLesson.num - 1] || 'Урок';
         document.getElementById('currentLesson').textContent = `Урок ${lessonInfo.currentLesson.num}: ${lessonName}`;
-                statusEl.textContent = '🔴 Сейчас идёт урок';
+        statusEl.textContent = '🔴 Сейчас идёт урок';
         const nextLesson = getNextLesson(dayOfWeek, lessonInfo.currentLesson.num);
         if (nextLesson) {
             document.getElementById('nextLesson').textContent = `Следующий урок: Урок ${nextLesson.num} - ${nextLesson.name}`;
@@ -412,6 +412,18 @@ function updateTimer(minutes) {
     const secs = Math.floor((minutes % 1) * 60);
     const timerStr = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     document.getElementById('timerValue').textContent = timerStr;
+}
+
+// ===== ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СЛЕДУЮЩЕГО УРОКА =====
+function getNextLesson(dayOfWeek, currentLessonNum) {
+    const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
+    if (currentLessonNum < lessons.length) {
+        return {
+            num: currentLessonNum + 1,
+            name: lessons[currentLessonNum]
+        };
+    }
+    return null;
 }
 
 function updateTodaySchedule() {
