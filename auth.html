@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TL Schedules - Вход</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="auth-header">
+            <img src="Image/icon.png" alt="Logo" class="auth-logo">
+            <h1>TL Schedules</h1>
+            <p>Система управления присутствием</p>
+        </div>
+
+        <!-- ВКЛАДКА ВХОДА -->
+        <div id="loginTab" class="tab-content active">
+            <h2>🔐 Вход в аккаунт</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Имя пользователя / Email:</label>
+                    <input type="text" id="username" placeholder="test1 или admin" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Войти</button>
+            </form>
+
+            <p class="auth-toggle">
+                Нет аккаунта? <a href="#" onclick="switchTab('register'); return false;">Создать аккаунт</a>
+            </p>
+        </div>
+
+        <!-- ВКЛАДКА РЕГИСТРАЦИИ -->
+        <div id="registerTab" class="tab-content">
+            <h2>📝 Создание аккаунта</h2>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Полное имя:</label>
+                    <input type="text" id="regName" placeholder="Иван Иванов" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email /Username:</label>
+                    <input type="text" id="regEmail" placeholder="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Пароль:</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regRole">Роль:</label>
+                    <select id="regRole" required>
+                        <option value="">-- Выберите роль --</option>
+                        <option value="student">👤 Ученик</option>
+                        <option value="admin">👨‍💼 Администратор</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="adminCodeGroup" style="display:none;">
+                    <label for="adminCode">Код администратора:</label>
+                    <input type="password" id="adminCode" placeholder="Введите секретный код">
+                </div>
+
+                <button type="submit" class="btn-primary">Создать аккаунт</button>
+            </form>
+
+            <p class="auth-toggle">
+                Уже есть аккаунт? <a href="#" onclick="switchTab('login'); return false;">Войти</a>
+            </p>
+        </div>
+
+        <div class="auth-footer">
+            <p>Тестовые учетные данные: test1 / test123 или admin / admin123</p>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDx76_mQHM7EJCLhRA0sUpPj9Y0WqXNIeU",
+        authDomain: "server-70049.firebaseapp.com",
+        databaseURL: "https://server-70049-default-rtdb.firebaseio.com",
+        projectId: "server-70049",
+        storageBucket: "server-70049.firebasestorage.app",
+        messagingSenderId: "184269338772",
+        appId: "1:184269338772:web:e1182d8462dd8176501c81"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ADMIN_CODE = "ADMIN123";
+
+    function switchTab(tab) {
+        document.getElementById('loginTab').classList.remove('active');
+        document.getElementById('registerTab').classList.remove('active');
+        document.getElementById(tab + 'Tab').classList.add('active');
+    }
+
+    document.getElementById('regRole').addEventListener('change', function() {
+        document.getElementById('adminCodeGroup').style.display = this.value === 'admin' ? 'block' : 'none';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        db.ref('tl-schedules/users').once('value', snapshot => {
+            if (!snapshot.exists()) {
+                alert('❌ Пользователь не найден');
+                return;
+            }
+
+            let foundUser = null;
+            snapshot.forEach(child => {
+                const user = child.val();
+                if ((user.email === username || user.username === username) && user.password === password) {
+                    foundUser = { uid: child.key, ...user };
+                }
+            });
+
+            if (foundUser) {
+                localStorage.setItem('currentUser', JSON.stringify(foundUser));
+                alert('✅ Вход выполнен успешно!');
+                window.location.href = 'attendance.html';
+            } else {
+                alert('❌ Неверное имя пользователя или пароль');
+            }
+        });
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const role = document.getElementById('regRole').value;
+        const adminCode = document.getElementById('adminCode').value;
+
+        if (role === 'admin' && adminCode !== ADMIN_CODE) {
+            alert('❌ Неверный код администратора');
+            return;
+        }
+
+        db.ref('tl-schedules/users').once('value', snapshot => {
+            let exists = false;
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    const user = child.val();
+                    if (user.email === email || user.username === email) {
+                        exists = true;
+                    }
+                });
+            }
+
+            if (exists) {
+                alert('❌ Этот username уже зарегистрирован');
+                return;
+            }
+
+            const newUser = {
+                name: name,
+                email: email,
+                username: email,
+                password: password,
+                role: role,
+                createdAt: new Date().toISOString()
+            };
+
+            db.ref('tl-schedules/users').push(newUser).then(() => {
+                alert('✅ Аккаунт создан! Пожалуйста, войдите.');
+                switchTab('login');
+                document.getElementById('registerForm').reset();
+            }).catch(error => {
+                alert('❌ Ошибка: ' + error.message);
+            });
+        });
+    });
+</script>
+</body>
+</html>
