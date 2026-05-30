@@ -1,0 +1,43 @@
+/* СТИЛИ ДЛЯ КНОПКИ ВХОДА НА ГЛАВНОЙ СТРАНИЦЕ */
+.login-button-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.login-button-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.login-button-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.login-button-main:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .login-button-container {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .login-button-main {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+}
