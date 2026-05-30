@@ -24,7 +24,7 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Имя пользователя / Email:</label>
-                    <input type="text" id="username" placeholder="test1 или admin" required>
+                    <input type="text" id="username" placeholder="admin, test1, student1" required>
                 </div>
 
                 <div class="form-group">
@@ -36,54 +36,15 @@
             </form>
 
             <p class="auth-toggle">
-                Нет аккаунта? <a href="#" onclick="switchTab('register'); return false;">Создать аккаунт</a>
-            </p>
-        </div>
-
-        <!-- ВКЛАДКА РЕГИСТРАЦИИ -->
-        <div id="registerTab" class="tab-content">
-            <h2>📝 Создание аккаунта</h2>
-            
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="regName">Полное имя:</label>
-                    <input type="text" id="regName" placeholder="Иван Иванов" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="regEmail">Email /Username:</label>
-                    <input type="text" id="regEmail" placeholder="username" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="regPassword">Пароль:</label>
-                    <input type="password" id="regPassword" placeholder="••••••••" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="regRole">Роль:</label>
-                    <select id="regRole" required>
-                        <option value="">-- Выберите роль --</option>
-                        <option value="student">👤 Ученик</option>
-                        <option value="admin">👨‍💼 Администратор</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="adminCodeGroup" style="display:none;">
-                    <label for="adminCode">Код администратора:</label>
-                    <input type="password" id="adminCode" placeholder="Введите секретный код">
-                </div>
-
-                <button type="submit" class="btn-primary">Создать аккаунт</button>
-            </form>
-
-            <p class="auth-toggle">
-                Уже есть аккаунт? <a href="#" onclick="switchTab('login'); return false;">Войти</a>
+                <a href="#" onclick="goHome(); return false;">← Вернуться на главную</a>
             </p>
         </div>
 
         <div class="auth-footer">
-            <p>Тестовые учетные данные: test1 / test123 или admin / admin123</p>
+            <p>📋 Тестовые учетные данные:</p>
+            <p>👨‍💼 <strong>admin</strong> / admin123</p>
+            <p>👨‍🏫 <strong>test1</strong> / test123</p>
+            <p>👤 <strong>student1</strong> / student123</p>
         </div>
     </div>
 </div>
@@ -91,6 +52,9 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+
+<!-- Загружаем файл с данными пользователей -->
+<script src="users-data.js"></script>
 
 <script>
     const firebaseConfig = {
@@ -105,93 +69,49 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const ADMIN_CODE = "ADMIN123";
 
-    function switchTab(tab) {
-        document.getElementById('loginTab').classList.remove('active');
-        document.getElementById('registerTab').classList.remove('active');
-        document.getElementById(tab + 'Tab').classList.add('active');
+    /**
+     * Переход на главную страницу
+     */
+    function goHome() {
+        window.location.href = 'index.html';
     }
 
-    document.getElementById('regRole').addEventListener('change', function() {
-        document.getElementById('adminCodeGroup').style.display = this.value === 'admin' ? 'block' : 'none';
-    });
-
+    /**
+     * Обработка входа в аккаунт
+     */
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
-        db.ref('tl-schedules/users').once('value', snapshot => {
-            if (!snapshot.exists()) {
-                alert('❌ Пользователь не найден');
-                return;
-            }
-
-            let foundUser = null;
-            snapshot.forEach(child => {
-                const user = child.val();
-                if ((user.email === username || user.username === username) && user.password === password) {
-                    foundUser = { uid: child.key, ...user };
-                }
-            });
-
-            if (foundUser) {
-                localStorage.setItem('currentUser', JSON.stringify(foundUser));
-                alert('✅ Вход выполнен успешно!');
-                window.location.href = 'attendance.html';
-            } else {
-                alert('❌ Неверное имя пользователя или пароль');
-            }
-        });
-    });
-
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('regName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPassword').value;
-        const role = document.getElementById('regRole').value;
-        const adminCode = document.getElementById('adminCode').value;
-
-        if (role === 'admin' && adminCode !== ADMIN_CODE) {
-            alert('❌ Неверный код администратора');
-            return;
-        }
-
-        db.ref('tl-schedules/users').once('value', snapshot => {
-            let exists = false;
-            if (snapshot.exists()) {
-                snapshot.forEach(child => {
-                    const user = child.val();
-                    if (user.email === email || user.username === email) {
-                        exists = true;
-                    }
-                });
-            }
-
-            if (exists) {
-                alert('❌ Этот username уже зарегистрирован');
-                return;
-            }
-
-            const newUser = {
-                name: name,
-                email: email,
-                username: email,
-                password: password,
-                role: role,
-                createdAt: new Date().toISOString()
+        // Проверяем предустановленных пользователей
+        const predefinedUser = getPredefinedUser(username);
+        
+        if (predefinedUser && predefinedUser.password === password) {
+            // Успешный вход
+            const userToStore = {
+                uid: predefinedUser.username,
+                ...predefinedUser,
+                loginTime: new Date().toISOString()
             };
-
-            db.ref('tl-schedules/users').push(newUser).then(() => {
-                alert('✅ Аккаунт создан! Пожалуйста, войдите.');
-                switchTab('login');
-                document.getElementById('registerForm').reset();
-            }).catch(error => {
-                alert('❌ Ошибка: ' + error.message);
+            
+            localStorage.setItem('currentUser', JSON.stringify(userToStore));
+            
+            // Логируем вход в Firebase (для статистики)
+            db.ref('tl-schedules/login-logs/' + Date.now()).set({
+                username: predefinedUser.username,
+                name: predefinedUser.name,
+                role: predefinedUser.role,
+                timestamp: new Date().toISOString()
             });
-        });
+
+            alert('✅ Вход выполнен успешно! Добро пожаловать, ' + predefinedUser.name);
+            window.location.href = 'attendance.html';
+        } else {
+            alert('❌ Неверное имя пользователя или пароль');
+            document.getElementById('password').value = '';
+        }
     });
 </script>
 </body>
