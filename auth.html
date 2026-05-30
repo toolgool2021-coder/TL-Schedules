@@ -53,10 +53,46 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
 
-<!-- Загружаем файл с данными пользователей -->
-<script src="users-data.js"></script>
-
 <script>
+    // ========================================
+    // ВСТРОЕННАЯ БАЗА ДАННЫХ ПОЛЬЗОВАТЕЛЕЙ
+    // ========================================
+    const USERS_DATABASE = {
+        'admin': {
+            username: 'admin',
+            email: 'admin@tl-schedules.local',
+            password: 'admin123',
+            name: 'Администратор',
+            role: 'admin',
+            permissions: ['view_all', 'edit_attendance', 'manage_users', 'export_data']
+        },
+        'test1': {
+            username: 'test1',
+            email: 'test1@tl-schedules.local',
+            password: 'test123',
+            name: 'Тестовый Пользователь',
+            role: 'teacher',
+            permissions: ['view_attendance', 'mark_attendance']
+        },
+        'student1': {
+            username: 'student1',
+            email: 'student1@tl-schedules.local',
+            password: 'student123',
+            name: 'Ученик 1',
+            role: 'student',
+            permissions: ['view_own_attendance', 'mark_own_attendance']
+        },
+        'student2': {
+            username: 'student2',
+            email: 'student2@tl-schedules.local',
+            password: 'student123',
+            name: 'Ученик 2',
+            role: 'student',
+            permissions: ['view_own_attendance', 'mark_own_attendance']
+        }
+    };
+
+    // Инициализация Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDx76_mQHM7EJCLhRA0sUpPj9Y0WqXNIeU",
         authDomain: "server-70049.firebaseapp.com",
@@ -70,45 +106,71 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    /**
-     * Переход на главную страницу
-     */
+    // Функция поиска пользователя
+    function findUser(usernameOrEmail) {
+        // Ищем по username
+        if (USERS_DATABASE[usernameOrEmail]) {
+            return USERS_DATABASE[usernameOrEmail];
+        }
+        
+        // Ищем по email
+        for (const username in USERS_DATABASE) {
+            if (USERS_DATABASE[username].email === usernameOrEmail) {
+                return USERS_DATABASE[username];
+            }
+        }
+        
+        return null;
+    }
+
+    // Переход на главную
     function goHome() {
         window.location.href = 'index.html';
     }
 
-    /**
-     * Обработка входа в аккаунт
-     */
+    // Обработка входа
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
-        // Проверяем предустановленных пользователей
-        const predefinedUser = getPredefinedUser(username);
+        console.log('🔍 Поиск пользователя:', username);
+
+        // Ищем пользователя в локальной базе
+        const user = findUser(username);
         
-        if (predefinedUser && predefinedUser.password === password) {
-            // Успешный вход
+        console.log('👤 Результат поиска:', user);
+
+        if (user && user.password === password) {
+            console.log('✅ Пароль совпадает!');
+            
+            // Сохраняем данные пользователя
             const userToStore = {
-                uid: predefinedUser.username,
-                ...predefinedUser,
+                uid: user.username,
+                ...user,
                 loginTime: new Date().toISOString()
             };
             
             localStorage.setItem('currentUser', JSON.stringify(userToStore));
+            console.log('💾 Данные сохранены в localStorage');
             
-            // Логируем вход в Firebase (для статистики)
+            // Логируем вход в Firebase (опционально)
             db.ref('tl-schedules/login-logs/' + Date.now()).set({
-                username: predefinedUser.username,
-                name: predefinedUser.name,
-                role: predefinedUser.role,
+                username: user.username,
+                name: user.name,
+                role: user.role,
                 timestamp: new Date().toISOString()
+            }).then(() => {
+                console.log('📊 Лог входа записан в Firebase');
+            }).catch(err => {
+                console.log('⚠️ Firebase недоступен (это нормально):', err.message);
             });
 
-            alert('✅ Вход выполнен успешно! Добро пожаловать, ' + predefinedUser.name);
+            alert('✅ Вход выполнен успешно!\nДобро пожаловать, ' + user.name);
             window.location.href = 'attendance.html';
         } else {
+            console.log('❌ Неверные учетные данные');
             alert('❌ Неверное имя пользователя или пароль');
             document.getElementById('password').value = '';
         }
