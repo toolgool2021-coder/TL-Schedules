@@ -3,83 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TL Schedules - Посещаемость</title>
+    <title>TL Schedules - Отметка присутствия</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="auth-style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .role-badge.admin {
+            background: #dc3545;
+            color: white;
+        }
+
+        .role-badge.teacher {
+            background: #ffc107;
+            color: black;
+        }
+
+        .role-badge.student {
+            background: #28a745;
+            color: white;
+        }
+
+        /* СТУДЕНТ - ПРОСТОЙ ИНТЕРФЕЙС */
+        .student-section {
+            text-align: center;
+        }
+
+        .student-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .today-date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .mark-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .mark-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .mark-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* УЧИТЕЛЬ/АДМИН - СПИСОК УЧЕНИКОВ */
+        .teacher-section {
+            display: none;
+        }
+
+        .teacher-section.show {
+            display: block;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-item h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .stat-item p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .student-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .student-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .student-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .student-card.present {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .student-card label {
+            flex: 1;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
-<div class="attendance-container">
-    <div class="attendance-header">
-        <h1 class="attendance-title">📋 Посещаемость</h1>
-        
-        <div class="user-info">
-            <div class="user-avatar" id="userAvatar">И</div>
-            <div class="user-details">
-                <div class="user-name" id="userName">Загрузка...</div>
-                <div class="user-role" id="userRole">Ученик</div>
-            </div>
-            <button class="logout-btn" onclick="logout()">Выход</button>
-        </div>
-    </div>
-
-    <div class="date-info">
-        <p id="currentDateTime"></p>
-    </div>
-
-    <div id="statsSection" class="attendance-stats" style="display: none;">
-        <div class="stat-card">
-            <div class="stat-number" id="presentCount">0</div>
-            <div class="stat-label">Присутствуют</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="absentCount">0</div>
-            <div class="stat-label">Отсутствуют</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="sickCount">0</div>
-            <div class="stat-label">На болезнь</div>
-        </div>
-    </div>
-
-    <div class="attendance-list">
-        <div class="attendance-list-header">
-            <i class="fas fa-list"></i> Список учеников
-        </div>
-        <div class="attendance-items" id="attendanceItems">
-            <div class="empty-list">Загрузка данных...</div>
-        </div>
-    </div>
-
-    <div id="resetSection" style="display: none; margin-top: 20px;">
-        <button class="btn-reset" onclick="resetAttendance()">
-            <i class="fas fa-redo"></i> Сбросить посещаемость на сегодня
+<div class="container">
+    <div class="header">
+        <h1>📋 Отметка присутствия</h1>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Выход
         </button>
     </div>
 
-    <div class="attendance-report-section">
-        <h2>📊 Список отсутствующих</h2>
-        <div class="attendance-report-container">
-            <div class="report-column">
-                <h3>📋 Статусы</h3>
-                <div class="report-list" id="statusReport">
-                    <p class="loading-text">Загрузка...</p>
-                </div>
+    <!-- ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ -->
+    <div class="user-info">
+        <p><strong>👤 Пользователь:</strong> <span id="userName">Загрузка...</span></p>
+        <p><strong>📅 Дата:</strong> <span id="todayDate">Загрузка...</span></p>
+        <span class="role-badge" id="roleRole">Загрузка...</span>
+    </div>
+
+    <!-- СЕКЦИЯ ДЛЯ СТУДЕНТОВ -->
+    <div class="student-section" id="studentSection">
+        <h2>✅ Отметьте ваше присутствие</h2>
+        <p class="today-date" id="studentDate">Загрузка...</p>
+        <button class="mark-button" id="markPresentBtn" onclick="markStudentPresent()">
+            <i class="fas fa-check-circle"></i> Я присутствую
+        </button>
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Вы успешно отмечены присутствующим!
+        </div>
+    </div>
+
+    <!-- СЕКЦИЯ ДЛЯ УЧИТЕЛЕЙ/АДМИНОВ -->
+    <div class="teacher-section" id="teacherSection">
+        <h2>📊 Отметка присутствия учеников</h2>
+        
+        <!-- СТАТИСТИКА -->
+        <div class="stats">
+            <div class="stat-item">
+                <p>Присутствуют</p>
+                <h3 id="presentCount">0</h3>
             </div>
-            <div class="report-column">
-                <h3>❌ Отсутствующие</h3>
-                <div class="report-list" id="absentReport">
-                    <p class="loading-text">Загрузка...</p>
-                </div>
+            <div class="stat-item">
+                <p>Отсутствуют</p>
+                <h3 id="absentCount">0</h3>
+            </div>
+            <div class="stat-item">
+                <p>Всего</p>
+                <h3 id="totalCount">0</h3>
             </div>
         </div>
+
+        <!-- СПИСОК УЧЕНИКОВ -->
+        <div class="students-grid" id="studentsGrid">
+            <!-- Заполняется JavaScript -->
+        </div>
+
+        <!-- КНОПКА СОХРАНЕНИЯ -->
+        <button class="save-btn" onclick="saveAttendance()">
+            <i class="fas fa-save"></i> Сохранить присутствие
+        </button>
+
+        <!-- СООБЩЕНИЯ -->
+        <div class="message" id="message"></div>
     </div>
 </div>
 
+<!-- Загружаем необходимые скрипты -->
+<script src="students-list.js"></script>
+<script src="users-data.js"></script>
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
 
 <script>
+    // Инициализация Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDx76_mQHM7EJCLhRA0sUpPj9Y0WqXNIeU",
         authDomain: "server-70049.firebaseapp.com",
@@ -93,248 +352,187 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let currentUser = null;
-    let attendanceData = {};
-    const today = new Date().toISOString().split('T')[0];
-
-    function init() {
+    // Получить текущего пользователя
+    function getCurrentUser() {
         const userStr = localStorage.getItem('currentUser');
         if (!userStr) {
             window.location.href = 'auth.html';
-            return;
+            return null;
         }
-
-        currentUser = JSON.parse(userStr);
-        displayUserInfo();
-        updateDateTime();
-        loadAttendance();
-        initializeDailyReset();
-
-        if (currentUser.role === 'admin') {
-            document.getElementById('statsSection').style.display = 'grid';
-            document.getElementById('resetSection').style.display = 'block';
-        }
-
-        setInterval(updateDateTime, 1000);
+        return JSON.parse(userStr);
     }
 
-    function displayUserInfo() {
-        document.getElementById('userName').textContent = currentUser.name;
-        document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '👨‍💼 Администратор' : '👤 Ученик';
-        document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+    // Получить сегодняшнюю дату в формате YYYY-MM-DD
+    function getTodayDate() {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
     }
 
-    function updateDateTime() {
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        document.getElementById('currentDateTime').textContent = now.toLocaleDateString('ru-RU', options);
+    // Форматировать дату для отображения
+    function formatDate(dateStr) {
+        const date = new Date(dateStr + 'T00:00:00');
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('ru-RU', options);
     }
 
-    function loadAttendance() {
-        const attendancePath = `tl-schedules/attendance/${today}`;
-        
-        db.ref(attendancePath).on('value', snapshot => {
-            attendanceData = snapshot.val() || {};
-            renderAttendanceList();
-            updateStats();
-            generateReports();
-        });
-
-        db.ref('tl-schedules/users').once('value', snapshot => {
-            if (!snapshot.exists()) return;
-
-            snapshot.forEach(child => {
-                if (!attendanceData[child.key]) {
-                    attendanceData[child.key] = {
-                        userId: child.key,
-                        name: child.val().name,
-                        role: child.val().role,
-                        status: 'present'
-                    };
-                }
-            });
-
-            renderAttendanceList();
-            generateReports();
-        });
-    }
-
-    function renderAttendanceList() {
-        const container = document.getElementById('attendanceItems');
-        
-        if (Object.keys(attendanceData).length === 0) {
-            container.innerHTML = '<div class="empty-list">Нет данных о посещаемости</div>';
-            return;
-        }
-
-        container.innerHTML = '';
-
-        Object.entries(attendanceData).forEach(([key, data]) => {
-            if (currentUser.role === 'student' && key !== currentUser.uid) {
-                return;
-            }
-
-            const item = document.createElement('div');
-            item.className = 'attendance-item';
-            
-            const isOwnRecord = key === currentUser.uid;
-            const canEdit = currentUser.role === 'admin' || isOwnRecord;
-            const initials = (data.name || 'П').split(' ').map(n => n[0]).join('').toUpperCase();
-
-            let statusBadgeClass = 'status-present';
-            let statusText = '✅ Присутствует';
-            
-            if (data.status === 'absent') {
-                statusBadgeClass = 'status-absent';
-                statusText = '❌ Отсутствует';
-            } else if (data.status === 'sick') {
-                statusBadgeClass = 'status-sick';
-                statusText = '🤒 На болезнь';
-            }
-
-            item.innerHTML = `
-                <div class="item-name">
-                    <div class="item-avatar">${initials}</div>
-                    <div class="item-info">
-                        <div class="item-user-name">${data.name || 'Неизвестно'}</div>
-                        <div class="item-user-role">${data.role === 'admin' ? '👨‍💼 Администратор' : '👤 Ученик'}</div>
-                    </div>
-                </div>
-                <div class="item-status">
-                    ${canEdit ? `
-                        <select class="status-select" onchange="updateAttendance('${key}', this.value)">
-                            <option value="present" ${data.status === 'present' ? 'selected' : ''}>✅ Присутствует</option>
-                            <option value="absent" ${data.status === 'absent' ? 'selected' : ''}>❌ Отсутствует</option>
-                            <option value="sick" ${data.status === 'sick' ? 'selected' : ''}>🤒 На болезнь</option>
-                        </select>
-                    ` : `
-                        <div class="status-badge ${statusBadgeClass}">${statusText}</div>
-                    `}
-                </div>
-            `;
-
-            container.appendChild(item);
-        });
-    }
-
-    function generateReports() {
-        let statusReportHTML = '';
-        let absentReportHTML = '';
-
-        const sortedEntries = Object.entries(attendanceData)
-            .filter(([key, data]) => data.role === 'student')
-            .sort((a, b) => {
-                const statusOrder = { present: 0, sick: 1, absent: 2 };
-                return statusOrder[a[1].status] - statusOrder[b[1].status];
-            });
-
-        if (sortedEntries.length === 0) {
-            statusReportHTML = '<p class="loading-text">Нет данных</p>';
-            absentReportHTML = '<p class="loading-text">Все присутствуют ✅</p>';
-        } else {
-            sortedEntries.forEach(([key, data]) => {
-                const statusEmoji = data.status === 'present' ? '✅' : (data.status === 'sick' ? '🤒' : '❌');
-                statusReportHTML += `<div class="report-item">${statusEmoji} ${data.name}</div>`;
-            });
-
-            const absentUsers = sortedEntries.filter(([_, data]) => data.status === 'absent' || data.status === 'sick');
-            if (absentUsers.length === 0) {
-                absentReportHTML = '<p class="loading-text">Все присутствуют ✅</p>';
-            } else {
-                absentUsers.forEach(([key, data]) => {
-                    const statusText = data.status === 'sick' ? '🤒 На болезнь' : '❌ Отсутствует';
-                    absentReportHTML += `<div class="report-item">${data.name} - ${statusText}</div>`;
-                });
-            }
-        }
-
-        document.getElementById('statusReport').innerHTML = statusReportHTML;
-        document.getElementById('absentReport').innerHTML = absentReportHTML;
-    }
-
-    function updateAttendance(userId, status) {
-        const attendancePath = `tl-schedules/attendance/${today}/${userId}`;
-        
-        db.ref(attendancePath).update({
-            status: status,
-            updatedAt: new Date().toISOString()
-        }).then(() => {
-            loadAttendance();
-        }).catch(error => {
-            alert('❌ Ошибка обновления: ' + error.message);
-        });
-    }
-
-    function updateStats() {
-        let present = 0, absent = 0, sick = 0;
-
-        Object.values(attendanceData).forEach(data => {
-            if (data.status === 'present') present++;
-            else if (data.status === 'absent') absent++;
-            else if (data.status === 'sick') sick++;
-        });
-
-        document.getElementById('presentCount').textContent = present;
-        document.getElementById('absentCount').textContent = absent;
-        document.getElementById('sickCount').textContent = sick;
-    }
-
-    function initializeDailyReset() {
-        function checkAndReset() {
-            const now = new Date();
-            const nextReset = new Date(now);
-            nextReset.setDate(nextReset.getDate() + 1);
-            nextReset.setHours(0, 0, 0, 0);
-            const timeToReset = nextReset - now;
-            setTimeout(() => {
-                resetAttendanceAuto();
-                checkAndReset();
-            }, timeToReset);
-        }
-        checkAndReset();
-    }
-
-    function resetAttendanceAuto() {
-        const newToday = new Date().toISOString().split('T')[0];
-        db.ref('tl-schedules/users').once('value', snapshot => {
-            if (!snapshot.exists()) return;
-            const updates = {};
-            snapshot.forEach(child => {
-                updates[`tl-schedules/attendance/${newToday}/${child.key}`] = {
-                    userId: child.key,
-                    name: child.val().name,
-                    role: child.val().role,
-                    status: 'present',
-                    createdAt: new Date().toISOString()
-                };
-            });
-            db.ref().update(updates);
-        });
-    }
-
-    function resetAttendance() {
-        if (currentUser.role !== 'admin') {
-            alert('❌ Только администраторы могут сбросить посещаемость');
-            return;
-        }
-        if (!confirm('⚠️ Вы уверены?')) return;
-        const attendancePath = `tl-schedules/attendance/${today}`;
-        db.ref(attendancePath).remove().then(() => {
-            alert('✅ Посещаемость сброшена');
-            loadAttendance();
-        }).catch(error => {
-            alert('❌ Ошибка: ' + error.message);
-        });
-    }
-
+    // Выход из системы
     function logout() {
-        if (confirm('Вы уверены, что хотите выйти?')) {
-            localStorage.removeItem('currentUser');
-            window.location.href = 'auth.html';
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }
+
+    // Инициализация интерфейса
+    function initializeUI() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        const today = getTodayDate();
+        const formattedDate = formatDate(today);
+
+        // Заполняем информацию о пользователе
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('todayDate').textContent = formattedDate;
+        document.getElementById('studentDate').textContent = formattedDate;
+
+        // Устанавливаем бейдж роли
+        const roleBadge = document.getElementById('roleRole');
+        if (user.role === 'admin') {
+            roleBadge.textContent = '👨‍💼 Администратор';
+            roleBadge.className = 'role-badge admin';
+        } else if (user.role === 'teacher') {
+            roleBadge.textContent = '👨‍🏫 Учитель';
+            roleBadge.className = 'role-badge teacher';
+        } else {
+            roleBadge.textContent = '👤 Ученик';
+            roleBadge.className = 'role-badge student';
+        }
+
+        // Показываем нужную секцию
+        if (user.role === 'student') {
+            document.getElementById('studentSection').classList.add('show');
+            checkStudentAttendance();
+        } else {
+            document.getElementById('teacherSection').classList.add('show');
+            loadTeacherAttendance();
         }
     }
 
-    init();
+    // Отметить ученика присутствующим
+    function markStudentPresent() {
+        const user = getCurrentUser();
+        const today = getTodayDate();
+        const btn = document.getElementById('markPresentBtn');
+
+        btn.disabled = true;
+        btn.textContent = '⏳ Сохранение...';
+
+        db.ref(`attendance/${today}/${user.uid}`).set(true).then(() => {
+            document.getElementById('successMessage').classList.add('show');
+            btn.textContent = '✅ Уже отмечены!';
+            btn.disabled = true;
+        }).catch(err => {
+            alert('❌ Ошибка: ' + err.message);
+            btn.disabled = false;
+            btn.textContent = '✅ Я присутствую';
+        });
+    }
+
+    // Проверить, отмечен ли студент
+    function checkStudentAttendance() {
+        const user = getCurrentUser();
+        const today = getTodayDate();
+
+        db.ref(`attendance/${today}/${user.uid}`).once('value', snapshot => {
+            if (snapshot.val() === true) {
+                document.getElementById('markPresentBtn').disabled = true;
+                document.getElementById('markPresentBtn').textContent = '✅ Уже отмечены!';
+                document.getElementById('successMessage').classList.add('show');
+            }
+        });
+    }
+
+    // Загрузить присутствие для учителя
+    function loadTeacherAttendance() {
+        const today = getTodayDate();
+        const students = getStudentsList();
+
+        // Загружаем существующие отметки
+        db.ref(`attendance/${today}`).once('value', snapshot => {
+            const attendance = snapshot.val() || {};
+            renderStudentsList(students, attendance);
+        });
+    }
+
+    // Отрисовать список учеников для учителя
+    function renderStudentsList(students, attendance) {
+        const grid = document.getElementById('studentsGrid');
+        grid.innerHTML = '';
+
+        students.forEach(student => {
+            const isPresent = attendance[student] === true;
+            const card = document.createElement('div');
+            card.className = 'student-card' + (isPresent ? ' present' : '');
+            card.innerHTML = `
+                <input type="checkbox" id="student-${student}" ${isPresent ? 'checked' : ''} 
+                       onchange="updateStudentCard(this)">
+                <label for="student-${student}">${student}</label>
+            `;
+            grid.appendChild(card);
+        });
+
+        updateStats();
+    }
+
+    // Обновить карточку студента
+    function updateStudentCard(checkbox) {
+        const card = checkbox.parentElement;
+        if (checkbox.checked) {
+            card.classList.add('present');
+        } else {
+            card.classList.remove('present');
+        }
+        updateStats();
+    }
+
+    // Обновить статистику
+    function updateStats() {
+        const students = getStudentsList();
+        const checkboxes = document.querySelectorAll('.student-card input[type="checkbox"]');
+        const presentCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const absentCount = students.length - presentCount;
+
+        document.getElementById('presentCount').textContent = presentCount;
+        document.getElementById('absentCount').textContent = absentCount;
+        document.getElementById('totalCount').textContent = students.length;
+    }
+
+    // Сохранить присутствие
+    function saveAttendance() {
+        const today = getTodayDate();
+        const students = getStudentsList();
+        const checkboxes = document.querySelectorAll('.student-card input[type="checkbox"]');
+        const message = document.getElementById('message');
+
+        const attendanceData = {};
+        students.forEach((student, index) => {
+            attendanceData[student] = checkboxes[index].checked;
+        });
+
+        db.ref(`attendance/${today}`).set(attendanceData).then(() => {
+            message.textContent = '✅ Присутствие сохранено!';
+            message.className = 'message success show';
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 3000);
+        }).catch(err => {
+            message.textContent = '❌ Ошибка: ' + err.message;
+            message.className = 'message error show';
+        });
+    }
+
+    // Инициализируем при загрузке
+    window.addEventListener('load', initializeUI);
 </script>
+
 </body>
 </html>
