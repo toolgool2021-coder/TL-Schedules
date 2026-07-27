@@ -13,13 +13,20 @@
 
 <div class="container">
 
-    <!-- ИНФОРМАЦИОННЫЙ БЛОК (БЕТА ВЕРСИЯ) -->
+    <!-- ИНФОРМАЦИОННЫЙ БЛОК (БЕТА ВЕРСИЯ) - УЛУЧШЕННЫЙ ДИЗАЙН -->
     <div class="beta-info-block">
         <div class="beta-header">
-            <span class="beta-badge">[ БЕТА ВЕРСИЯ ]</span>
+            <div class="beta-icon">
+                <i class="fas fa-flask-vial"></i>
+            </div>
+            <div class="beta-content">
+                <span class="beta-badge">БЕТА ВЕРСИЯ</span>
+                <h3 class="beta-title">Находится на этапе тестирования</h3>
+            </div>
         </div>
         <p class="beta-description">
-            Данная версия находится в стадии тестирования и использует системное время и дату устройства пользователя.
+            <i class="fas fa-info-circle"></i>
+            Данная версия находится в активной разработке. Приложение использует <strong>системное время и дату вашего устройства</strong>. Возможны небольшие неточности в отображении расписания. Мы работаем над улучшениями! 🚀
         </p>
         <button id="downloadOfflineBtn" class="download-offline-btn">
             <i class="fas fa-download"></i> Скачать оффлайн версию
@@ -32,7 +39,7 @@
             <img src="Image/icon.png" alt="TL Schedules Logo" class="project-logo">
         </div>
         <h1 class="project-title">TL Schedules</h1>
-        <p class="project-subtitle">Расписание занятий в реальном времени</p>
+        <p class="project-subtitle">📅 Расписание занятий в реальном времени</p>
     </div>
     
     <!-- ВЕРХНЯЯ ИНФОРМАЦИЯ -->
@@ -48,7 +55,7 @@
 
     <!-- ПЕРЕКЛЮЧАТЕЛЬ ДЛИТЕЛЬНОСТИ УРОКОВ -->
     <div class="duration-control">
-        <p class="duration-label">Длительность урока:</p>
+        <p class="duration-label">⏱️ Длительность урока:</p>
         <div class="duration-buttons">
             <button class="duration-btn active" data-duration="45">45 мин</button>
             <button class="duration-btn" data-duration="40">40 мин</button>
@@ -61,12 +68,12 @@
         <div class="timer-display">
             <span class="timer-value" id="timerValue">00:00:00</span>
         </div>
-        <p class="timer-label" id="timerLabel">Осталось до конца урока</p>
+        <p class="timer-label" id="timerLabel">⏳ Осталось до конца урока</p>
     </div>
 
     <!-- РАСПИСАНИЕ УРОКОВ -->
     <div class="schedule-section">
-        <h2 id="scheduleTitle">Расписание на сегодня</h2>
+        <h2 id="scheduleTitle">📚 Расписание на сегодня</h2>
         <div class="schedule-list" id="scheduleList">
             <!-- Заполняется JavaScript -->
         </div>
@@ -74,7 +81,7 @@
 
     <!-- ПОЛНОЕ РАСПИСАНИЕ НА НЕДЕЛЮ -->
     <div class="full-schedule-section">
-        <h2>Полное расписание</h2>
+        <h2>📖 Полное расписание</h2>
         <div class="week-schedule" id="weekSchedule">
             <!-- Заполняется JavaScript -->
         </div>
@@ -92,10 +99,10 @@
                 <div class="teacher-card-subjects">📚 Кыргызский язык, Кыргызская литература, ДП</div>
                 <div class="teacher-card-phone">☎️ +996 703 151 331</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996703151331" class="teacher-btn-call">
+                    <a href="tel:+996703151331" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996703151331" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996703151331" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -108,10 +115,10 @@
                 <div class="teacher-card-subjects">📚 Алгебра, Геометрия, Математика, Биология</div>
                 <div class="teacher-card-phone">☎️ +996 558 337 747</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996558337747" class="teacher-btn-call">
+                    <a href="tel:+996558337747" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996558337747" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996558337747" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -123,10 +130,10 @@
                 <div class="teacher-card-subjects">📚 Русский язык, Русская литература</div>
                 <div class="teacher-card-phone">☎️ +996 554 603 042</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996554603042" class="teacher-btn-call">
+                    <a href="tel:+996554603042" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996554603042" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996554603042" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -138,10 +145,10 @@
                 <div class="teacher-card-subjects">📚 География</div>
                 <div class="teacher-card-phone">☎️ +996 559 312 013</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996559312013" class="teacher-btn-call">
+                    <a href="tel:+996559312013" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996559312013" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996559312013" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -153,10 +160,10 @@
                 <div class="teacher-card-subjects">📚 Физика, Астрономия</div>
                 <div class="teacher-card-phone">☎️ +996 776 979 884</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996776979884" class="teacher-btn-call">
+                    <a href="tel:+996776979884" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996776979884" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996776979884" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -168,10 +175,10 @@
                 <div class="teacher-card-subjects">📚 Английский язык</div>
                 <div class="teacher-card-phone">☎️ +996 708 681 464</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996708681464" class="teacher-btn-call">
+                    <a href="tel:+996708681464" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996708681464" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996708681464" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -183,10 +190,10 @@
                 <div class="teacher-card-subjects">📚 История, Человек и общество, ЧИО</div>
                 <div class="teacher-card-phone">☎️ +996 505 904 065</div>
                 <div class="teacher-card-buttons">
-                    <a href="tel:+996505904065" class="teacher-btn-call">
+                    <a href="tel:+996505904065" class="teacher-btn-call" title="Позвонить">
                         <i class="fas fa-phone"></i>
                     </a>
-                    <a href="https://wa.me/996505904065" target="_blank" class="teacher-btn-whatsapp">
+                    <a href="https://wa.me/996505904065" target="_blank" class="teacher-btn-whatsapp" title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -221,7 +228,7 @@
     <!-- БАГ РЕПОРТ СЕКЦИЯ -->
     <div class="bug-report-section">
         <h3>🐛 Нашли баг или неточность?</h3>
-        <p>Сообщите нам об ошибке в приложении, и мы её исправим!</p>
+        <p>Помогите нам улучшить приложение. Сообщите об ошибке или предложите улучшение!</p>
         <div class="bug-report-buttons">
             <a href="https://t.me/Toolgool_support_bot" target="_blank" class="bug-report-btn">
                 <i class="fab fa-telegram"></i> Бот поддержки
@@ -238,13 +245,13 @@
 <div id="noteModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 id="modalTitle">Заметка</h2>
+            <h2 id="modalTitle">📝 Заметка</h2>
             <span class="close">&times;</span>
         </div>
         <textarea id="noteText" class="note-textarea" placeholder="Введите заметку..."></textarea>
         <div class="modal-buttons">
-            <button id="saveNoteBtn" class="btn-modal save">Сохранить</button>
-            <button id="closeNoteBtn" class="btn-modal cancel">Закрыть</button>
+            <button id="saveNoteBtn" class="btn-modal save">✓ Сохранить</button>
+            <button id="closeNoteBtn" class="btn-modal cancel">✕ Закрыть</button>
         </div>
     </div>
 </div>
@@ -253,7 +260,7 @@
 <div id="teacherModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Информация об учителе</h2>
+            <h2>👤 Информация об учителе</h2>
             <span class="close">&times;</span>
         </div>
         <div class="teacher-info">
