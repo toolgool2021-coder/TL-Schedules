@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TL School — Расписание</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +50,7 @@
     <button class="mobile-close" id="mobileClose" aria-label="Закрыть меню">✕</button>
     <ul class="mobile-nav-list">
       <li><a href="#home" class="mobile-link">Главная</a></li>
-      <li><a href="#schedule" class="mobile-link">Расписание</a></li>
+      <li><a href="#schedule" class="mobile-link">Р��списание</a></li>
       <li><a href="#teachers" class="mobile-link">Учителя</a></li>
       <li><a href="#subjects" class="mobile-link">Предметы</a></li>
       <li><a href="#about" class="mobile-link">О школе</a></li>
@@ -95,7 +95,6 @@
         </div>
 
         <div class="hero-right" aria-hidden="true">
-          <!-- compact visual representation of today schedule -->
           <div class="hero-card schedule-preview">
             <header class="card-head">
               <div>
@@ -110,9 +109,8 @@
             </div>
 
             <div class="schedule-preview-list" id="heroScheduleList">
-              <!-- populated by script.js (keeps compatibility with existing logic) -->
+              <!-- populated by script.js -->
             </div>
-
           </div>
         </div>
       </div>
@@ -121,7 +119,7 @@
     <!-- SCHEDULE -->
     <section id="schedule" class="container section schedule">
       <div class="section-head">
-        <h2>Расписа��ие</h2>
+        <h2>Расписание</h2>
         <div class="controls-row">
           <div class="tabs">
             <button class="tab active" data-view="today">Сегодня</button>
@@ -190,18 +188,112 @@
       </div>
 
       <div class="cards-grid teachers-list" id="teachersList">
-        <!-- teacher cards are filled by existing script logic (openTeacherModal, teachersDatabase) -->
+        <div class="teacher-card">
+          <div class="teacher-card-name">Калыбаева Кульжан</div>
+          <div class="teacher-card-info">🚪 Кабинет 30</div>
+          <div class="teacher-card-info">☎️ +996 (312) 234-56-78</div>
+          <div class="teacher-card-subjects">📚 Алгебра, Геометрия, Химия, Биология</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Нурумова Елена</div>
+          <div class="teacher-card-info">🚪 Кабинет 43</div>
+          <div class="teacher-card-info">☎️ +996 (312) 345-67-89</div>
+          <div class="teacher-card-subjects">📚 Русский язык, Русская литература</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Корголдоев Алишер</div>
+          <div class="teacher-card-info">🚪 Кабинет 19</div>
+          <div class="teacher-card-info">☎️ +996 (312) 567-89-01</div>
+          <div class="teacher-card-subjects">📚 История, Человек и общество, ЧИО</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Томоева Гульзат</div>
+          <div class="teacher-card-info">🚪 Кабинет 37</div>
+          <div class="teacher-card-info">☎️ +996 (312) 789-01-23</div>
+          <div class="teacher-card-subjects">📚 Кыргызский язык, Кыргызская литература, ДП</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Рубцов Андрей</div>
+          <div class="teacher-card-info">🚪 Кабинет 39</div>
+          <div class="teacher-card-info">☎️ +996 (312) 456-78-90</div>
+          <div class="teacher-card-subjects">📚 Физика, Астрономия</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Темирова Элес</div>
+          <div class="teacher-card-info">🚪 Кабинет 35</div>
+          <div class="teacher-card-info">☎️ +996 (312) 678-90-12</div>
+          <div class="teacher-card-subjects">📚 Английский язык</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Эсенгулова Жыпаргул</div>
+          <div class="teacher-card-info">🚪 Кабинет 41</div>
+          <div class="teacher-card-info">☎️ +996 (312) 890-12-34</div>
+          <div class="teacher-card-subjects">📚 География</div>
+        </div>
+        <div class="teacher-card">
+          <div class="teacher-card-name">Моношева Айгерим</div>
+          <div class="teacher-card-info">🚪 Спортивный зал</div>
+          <div class="teacher-card-info">☎️ +996 (312) 123-45-67</div>
+          <div class="teacher-card-subjects">📚 Физическая культура</div>
+        </div>
       </div>
     </section>
 
-    <!-- SUBJECTS (light UI, filled if data exists) -->
+    <!-- SUBJECTS -->
     <section id="subjects" class="container section">
       <div class="section-head">
         <h2>Предметы</h2>
         <p class="muted">Краткий список предметов</p>
       </div>
       <div class="cards-grid subjects-grid" id="subjectsGrid">
-        <!-- script.js can be extended to populate, but leaves empty if no data -->
+        <div class="subject-card">
+          <div class="subject-icon">📐</div>
+          <div class="subject-name">Алгебра</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">📏</div>
+          <div class="subject-name">Геометрия</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🧬</div>
+          <div class="subject-name">Химия</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🧪</div>
+          <div class="subject-name">Биология</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">📖</div>
+          <div class="subject-name">Русский язык</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">📚</div>
+          <div class="subject-name">Литература</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🌍</div>
+          <div class="subject-name">История</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🗣️</div>
+          <div class="subject-name">Английский</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🗺️</div>
+          <div class="subject-name">География</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">⚛️</div>
+          <div class="subject-name">Физика</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🏃</div>
+          <div class="subject-name">Физкультура</div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-icon">🎨</div>
+          <div class="subject-name">Искусство</div>
+        </div>
       </div>
     </section>
 
@@ -214,13 +306,20 @@
       <div class="content-grid">
         <div class="card about-card">
           <h3>Кратко</h3>
-          <p>TL School — интерфейс для отображения расписаний, контактов преподавателей и заметок. Сохранены все существующие функции.</p>
+          <p>TL School — интерфейс для отображения расписаний, контактов преподавателей и заметок. Данная версия находится в стадии тестирования и использует системное время и дату устройства пользователя. Сохранены все существующие функции.</p>
         </div>
 
         <div class="card contact-card">
           <h3>Контакты</h3>
-          <p class="muted">Связь через репозиторий и Telegram (если указано)</p>
-          <p><a href="mailto:Toolgool2021@gmail.com">Toolgool2021@gmail.com</a></p>
+          <p class="muted">Связь через Telegram и Email</p>
+          <div class="contact-links">
+            <a href="https://t.me/Toolgool" target="_blank" class="contact-link">
+              <i class="fab fa-telegram"></i> Telegram
+            </a>
+            <a href="mailto:Toolgool2021@gmail.com" class="contact-link">
+              <i class="fas fa-envelope"></i> Email
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -274,7 +373,6 @@
   </div>
 
   <script>
-    // small nav toggles and progressive enhancement (keeps script.js untouched)
     (function(){
       const menuBtn = document.getElementById('menuBtn');
       const mobileNav = document.getElementById('mobileNav');
@@ -286,12 +384,9 @@
       });
       mobileClose.addEventListener('click', ()=>{ mobileNav.classList.remove('open'); mobileNav.setAttribute('aria-hidden','true'); menuBtn.setAttribute('aria-expanded','false'); });
 
-      // Update hero date and hero preview placeholders from existing dom ids
       function safeText(id, text){ const el = document.getElementById(id); if(el) el.textContent = text; }
       const now = new Date(); safeText('heroDate', now.toLocaleDateString('ru-RU'));
 
-      // Populate hero stats from available data if script.js sets them later
-      // Respect reduced motion
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reduced-motion');
     })();
   </script>
