@@ -19,7 +19,7 @@
   <header class="site-header" role="banner">
     <div class="header-inner container">
       <a href="#top" class="brand" aria-label="TL School home">
-        <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School" class="brand-logo">
+        <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School" class="brand-logo" width="48" height="48">
         <div class="brand-words">
           <span class="brand-title">TL School</span>
           <span class="brand-sub">Digital Timetable</span>
@@ -77,7 +77,7 @@
       <div class="container hero-inner">
         <div class="hero-left">
           <div class="logo-badge">
-            <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School logo" class="hero-logo">
+            <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School logo" class="hero-logo" width="64" height="64">
           </div>
           <h1 class="hero-title">TL School — Интеллектуальное расписание</h1>
           <p class="hero-lead">Удобное расписание класса, информация о преподавателях и быстрый доступ к материалам — в одном месте</p>
@@ -105,6 +105,10 @@
               <div class="current-lesson-badge" id="heroCurrentLesson">—</div>
             </header>
 
+            <div class="timer-display">
+              <div class="timer-value" id="timerValue">00:00:00</div>
+            </div>
+
             <div class="schedule-preview-list" id="heroScheduleList">
               <!-- populated by script.js (keeps compatibility with existing logic) -->
             </div>
@@ -117,7 +121,7 @@
     <!-- SCHEDULE -->
     <section id="schedule" class="container section schedule">
       <div class="section-head">
-        <h2>Расписание</h2>
+        <h2>Расписа��ие</h2>
         <div class="controls-row">
           <div class="tabs">
             <button class="tab active" data-view="today">Сегодня</button>
@@ -226,7 +230,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School" class="footer-logo">
+        <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School" class="footer-logo" width="36" height="36">
         <div class="footer-copy">© TL School — Учебное приложение</div>
       </div>
       <nav class="footer-nav">
@@ -265,7 +269,6 @@
     <span id="currentDate"></span>
     <span id="currentDay"></span>
     <span id="currentLesson"></span>
-    <span id="timerValue"></span>
     <span id="lessonStatus"></span>
     <span id="nextLesson"></span>
   </div>
