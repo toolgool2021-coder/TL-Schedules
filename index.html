@@ -8,9 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="tl-dark">
+
+  <!-- Canvas for snow effect -->
+  <canvas id="snowCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
 
   <!-- Sticky header -->
   <header class="site-header" role="banner">
@@ -134,7 +137,7 @@
       <div class="schedule-body">
         <div class="schedule-grid">
           <div class="schedule-column">
-            <h3 class="muted">Сегодня</h3>
+            <h3 class="muted" id="scheduleTitle">Сегодня</h3>
             <div class="schedule-list" id="scheduleList">
               <!-- script.js fills this -->
             </div>
@@ -234,9 +237,6 @@
     </div>
   </footer>
 
-  <!-- Canvas for snow effect -->
-  <canvas id="snowCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
-
   <!-- Keep modal placeholders for compatibility with script.js -->
   <div id="noteModal" class="modal" aria-hidden="true">
     <div class="modal-content">
@@ -268,7 +268,6 @@
     <span id="timerValue"></span>
     <span id="lessonStatus"></span>
     <span id="nextLesson"></span>
-    <span id="scheduleTitle"></span>
   </div>
 
   <script>
@@ -294,6 +293,6 @@
     })();
   </script>
 
-  <script src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/script.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
