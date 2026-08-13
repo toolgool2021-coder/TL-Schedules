@@ -1,4 +1,3 @@
-// ===== РАСПИСАНИЕ УРОКОВ =====
 let lessonDuration = 45;
 
 const baseStartTime = 480;
@@ -42,7 +41,6 @@ function formatTime(minutes) {
 
 let lessonTimes = generateLessonTimes();
 
-// ===== БАЗА ДАННЫХ УЧИТЕЛЕЙ =====
 const teachersDatabase = {
     "Физкультура": { name: "Моношева Айгерим", cabinet: "спорт зал", phone: null },
     "Математика": { name: "Калыбаева Кульжан", cabinet: "30", phone: "+996558337747" },
@@ -92,7 +90,6 @@ const weekSchedule = {
 
 const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 
-// ===== СНЕГ =====
 const canvas = document.getElementById('snowCanvas');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;
@@ -140,14 +137,12 @@ function updateSnow() {
 
 drawSnow();
 
-// ===== ЗАМЕТКИ (С LOCALSTORAGE) =====
 const modal = document.getElementById('noteModal');
 const noteText = document.getElementById('noteText');
 const saveNoteBtn = document.getElementById('saveNoteBtn');
 const closeNoteBtn = document.getElementById('closeNoteBtn');
 const closeBtn = document.querySelector('#noteModal .close');
 
-// ===== МОДАЛЬНОЕ ОКНО ДЛЯ ПОДРОБНОСТЕЙ УЧИТЕЛЯ =====
 const teacherModal = document.getElementById('teacherModal');
 const teacherCloseBtn = document.querySelector('#teacherModal .close');
 
@@ -253,7 +248,6 @@ window.addEventListener('click', (event) => {
     if (event.target === modal) closeNoteModal();
 });
 
-// ===== ЗАГРУЗКА ВЫБРАННОЙ ДЛИТЕЛЬНОСТИ =====
 function loadDurationPreference() {
     const saved = localStorage.getItem('lessonDuration');
     if (saved) {
@@ -283,7 +277,6 @@ document.querySelectorAll('.duration-btn').forEach(btn => {
     });
 });
 
-// ===== СКАЧИВАНИЕ ОФФЛАЙН ВЕРСИИ =====
 document.getElementById('downloadOfflineBtn').addEventListener('click', function() {
     fetch('https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/download/offline.html')
         .then(response => {
@@ -312,7 +305,6 @@ document.getElementById('downloadOfflineBtn').addEventListener('click', function
         });
 });
 
-// ===== ФУНКЦИИ ДЛЯ РАСПИСАНИЯ И ТАЙМЕРА =====
 function isWeekend() {
     const now = new Date();
     const dayOfWeek = now.getDay();
@@ -352,7 +344,6 @@ function getCurrentLessonInfo() {
     return { hasLesson: !!currentLesson, currentLesson, nextLesson, allLessonsFinished, currentMinutes };
 }
 
-// ===== ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СЛЕДУЮЩЕГО УРОКА =====
 function getNextLesson(dayOfWeek, currentLessonNum) {
     const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
     if (currentLessonNum < lessons.length) {
