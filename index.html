@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/style.css">
 </head>
 <body class="tl-dark">
 
@@ -16,7 +16,7 @@
   <header class="site-header" role="banner">
     <div class="header-inner container">
       <a href="#top" class="brand" aria-label="TL School home">
-        <img src="Image/icon.png" alt="TL School" class="brand-logo">
+        <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School" class="brand-logo">
         <div class="brand-words">
           <span class="brand-title">TL School</span>
           <span class="brand-sub">Digital Timetable</span>
@@ -74,10 +74,10 @@
       <div class="container hero-inner">
         <div class="hero-left">
           <div class="logo-badge">
-            <img src="Image/icon.png" alt="TL School logo" class="hero-logo">
+            <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School logo" class="hero-logo">
           </div>
           <h1 class="hero-title">TL School — Интеллектуальное расписание</h1>
-          <p class="hero-lead">Удобное расписание класса, информация о преподавателях и быстрый доступ к материалам — всё в одном месте.</p>
+          <p class="hero-lead">Удобное расписание класса, информация о преподавателях и быстрый доступ к материалам — в одном месте</p>
 
           <div class="hero-ctas">
             <a href="#schedule" class="btn btn-primary">Посмотреть расписание</a>
@@ -207,7 +207,7 @@
       <div class="content-grid">
         <div class="card about-card">
           <h3>Кратко</h3>
-          <p>TL School — интерфейс для отображения расписаний, контактов преподавателей и заметок. Сохранены все существующие функции и логика проекта.</p>
+          <p>TL School — интерфейс для отображения расписаний, контактов преподавателей и заметок. Сохранены все существующие функции.</p>
         </div>
 
         <div class="card contact-card">
@@ -223,7 +223,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <img src="Image/icon.png" alt="TL School" class="footer-logo">
+        <img src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/Image/icon.png" alt="TL School" class="footer-logo">
         <div class="footer-copy">© TL School — Учебное приложение</div>
       </div>
       <nav class="footer-nav">
@@ -234,9 +234,42 @@
     </div>
   </footer>
 
+  <!-- Canvas for snow effect -->
+  <canvas id="snowCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+
   <!-- Keep modal placeholders for compatibility with script.js -->
-  <div id="noteModal" class="modal" aria-hidden="true"></div>
-  <div id="teacherModal" class="modal" aria-hidden="true"></div>
+  <div id="noteModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle">Заметка</h2>
+      <textarea id="noteText" placeholder="Введите заметку..."></textarea>
+      <button id="saveNoteBtn">Сохранить</button>
+      <button id="closeNoteBtn">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="teacherModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="teacherName">—</h2>
+      <p id="teacherSource"></p>
+      <p id="teacherSubject"></p>
+      <p id="teacherCabinet"></p>
+      <p id="teacherPhone"></p>
+      <div id="teacherButtons"></div>
+    </div>
+  </div>
+
+  <!-- Hidden elements for display updates -->
+  <div style="display:none;">
+    <span id="currentDate"></span>
+    <span id="currentDay"></span>
+    <span id="currentLesson"></span>
+    <span id="timerValue"></span>
+    <span id="lessonStatus"></span>
+    <span id="nextLesson"></span>
+    <span id="scheduleTitle"></span>
+  </div>
 
   <script>
     // small nav toggles and progressive enhancement (keeps script.js untouched)
@@ -261,6 +294,6 @@
     })();
   </script>
 
-  <script src="script.js" defer></script>
+  <script src="https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/script.js" defer></script>
 </body>
 </html>
