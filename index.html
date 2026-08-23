@@ -326,16 +326,46 @@
     </div>
   </footer>
 
+  <!-- Note Edit Modal -->
   <div id="noteModal" class="modal" aria-hidden="true">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2 id="modalTitle">Заметка</h2>
       <textarea id="noteText" placeholder="Введите заметку..."></textarea>
-      <button id="saveNoteBtn">Сохранить</button>
-      <button id="closeNoteBtn">Закрыть</button>
+      <div class="modal-buttons">
+        <button id="saveNoteBtn">💾 Сохранить</button>
+        <button id="closeNoteBtn">✕ Закрыть</button>
+      </div>
     </div>
   </div>
 
+  <!-- Note View Modal -->
+  <div id="viewNoteModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>📖 Просмотр заметки</h2>
+      <div class="note-info">
+        <div class="note-info-item">
+          <span class="note-info-label">День</span>
+          <span class="note-info-value" id="viewNoteDayLabel">—</span>
+        </div>
+        <div class="note-info-item">
+          <span class="note-info-label">Урок</span>
+          <span class="note-info-value" id="viewNoteLessonLabel">—</span>
+        </div>
+        <div class="note-info-item">
+          <span class="note-info-label">Предмет</span>
+          <span class="note-info-value" id="viewNoteSubjectLabel">—</span>
+        </div>
+      </div>
+      <div class="note-view-box" id="noteViewContent"></div>
+      <div class="modal-buttons">
+        <button id="closeViewNoteBtn" class="btn btn-secondary">✕ Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Modal -->
   <div id="teacherModal" class="modal" aria-hidden="true">
     <div class="modal-content">
       <span class="close">&times;</span>
