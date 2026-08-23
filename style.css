@@ -51,7 +51,7 @@ a{color:inherit;text-decoration:none}
 .menu-btn{display:none;background:transparent;border:0;color:var(--text);font-size:18px;padding:8px}
 
 /* Mobile nav */
-.mobile-nav{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,20,0.96),rgba(2,6,20,0.98));transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.9,.2,1);z-index:80;padding:24px;overflow-y:auto;backdrop-filter:blur(var(--glass-blur))}
+.mobile-nav{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,20,0.96),rgba(2,6,20,0.98));transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.9,.2,1);z-index:80;padding:12px 18px;overflow-y:auto}
 .mobile-nav.open{transform:translateX(0)}
 .mobile-nav-list{list-style:none;padding:24px 0;margin:0;display:flex;flex-direction:column;gap:12px}
 .mobile-link{color:var(--text);font-size:18px;padding:12px;border-radius:10px;display:block;word-break:break-word}
@@ -71,7 +71,7 @@ a{color:inherit;text-decoration:none}
 .hero-stats strong{font-size:18px;color:var(--text-strong)}
 
 .hero-right{display:flex;justify-content:center}
-.hero-card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));backdrop-filter:blur(var(--glass-blur));border-radius:18px;padding:18px;width:100%;max-width:420px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.hero-card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));backdrop-filter:blur(var(--glass-blur));border-radius:18px;padding:18px;width:100%;max-width:420px;border:1px solid var(--border);box-shadow:0 10px 40px rgba(0,0,0,0.3)}
 .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .current-lesson-badge{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#01203b;padding:6px 10px;border-radius:999px;font-weight:700;white-space:nowrap;font-size:12px}
 
@@ -97,7 +97,7 @@ a{color:inherit;text-decoration:none}
 .schedule-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
 .schedule-column{min-width:0}
 .schedule-list{display:flex;flex-direction:column;gap:12px}
-.schedule-item{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.02);transition:all .2s ease;flex-wrap:wrap;gap:10px}
+.schedule-item{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.03);transition:all .2s ease}
 .schedule-item:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6);background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))}
 .schedule-item.active{border-left:4px solid var(--primary);background:linear-gradient(90deg,rgba(11,108,255,0.06),transparent)}
 .lesson-number{font-weight:700;color:var(--muted);margin-right:8px;flex-shrink:0}
@@ -107,82 +107,112 @@ a{color:inherit;text-decoration:none}
 .lesson-time{font-size:13px;color:var(--muted);white-space:nowrap}
 .lesson-subject{font-weight:700;color:var(--text-strong);word-wrap:break-word;overflow-wrap:break-word}
 
-/* Note Controls */
-.note-controls{display:flex;gap:6px;flex-shrink:0;align-items:center}
+/* Note Controls - Enhanced Design */
+.note-controls{display:flex;gap:8px;flex-shrink:0;align-items:center}
 .note-edit-btn, .note-view-btn, .note-delete-btn{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
+  background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));
+  border:1px solid rgba(255,255,255,0.12);
   border-radius:10px;
+  padding:8px 10px;
+  cursor:pointer;
+  font-size:16px;
+  transition:all .2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:36px;
+  height:36px;
+  color:var(--text);
+  position:relative;
+  overflow:hidden;
+}
+
+.note-edit-btn::before, .note-view-btn::before, .note-delete-btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  transform:translateX(-100%);
+  transition:transform .3s ease;
+}
+
+.note-edit-btn:hover::before, .note-view-btn:hover::before, .note-delete-btn:hover::before{
+  transform:translateX(100%);
+}
+
+.note-edit-btn:hover{
+  background:linear-gradient(135deg,rgba(11,108,255,0.25),rgba(0,212,255,0.15));
+  border-color:rgba(11,108,255,0.4);
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(11,108,255,0.25);
+}
+
+.note-view-btn:hover{
+  background:linear-gradient(135deg,rgba(0,212,255,0.25),rgba(11,108,255,0.15));
+  border-color:rgba(0,212,255,0.4);
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(0,212,255,0.25);
+}
+
+.note-delete-btn:hover{
+  background:linear-gradient(135deg,rgba(255,68,68,0.25),rgba(255,100,100,0.15));
+  border-color:rgba(255,68,68,0.4);
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(255,68,68,0.2);
+}
+
+/* Day Note Controls in week view */
+.day-note-controls{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.day-note-edit, .day-note-view, .day-note-delete{
+  background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:8px;
   padding:6px 8px;
   cursor:pointer;
   font-size:14px;
-  transition:all .2s ease;
+  transition:all .2s cubic-bezier(0.2, 0.8, 0.2, 1);
   display:flex;
   align-items:center;
   justify-content:center;
   min-width:32px;
   height:32px;
   color:var(--text);
+  position:relative;
+  overflow:hidden;
 }
 
-.note-edit-btn:hover{
-  background:linear-gradient(90deg,rgba(11,108,255,0.15),rgba(0,212,255,0.1));
-  border-color:rgba(11,108,255,0.3);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(11,108,255,0.2);
+.day-note-edit::before, .day-note-view::before, .day-note-delete::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  transform:translateX(-100%);
+  transition:transform .3s ease;
 }
 
-.note-view-btn:hover{
-  background:linear-gradient(90deg,rgba(0,212,255,0.15),rgba(11,108,255,0.1));
-  border-color:rgba(0,212,255,0.3);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,212,255,0.2);
-}
-
-.note-delete-btn:hover{
-  background:rgba(255,68,68,0.15);
-  border-color:rgba(255,68,68,0.3);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(255,68,68,0.2);
-}
-
-/* Day Note Controls in week view */
-.day-note-controls{display:flex;gap:4px;flex-shrink:0}
-.day-note-edit, .day-note-view, .day-note-delete{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:8px;
-  padding:4px 6px;
-  cursor:pointer;
-  font-size:12px;
-  transition:all .2s ease;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-width:28px;
-  height:28px;
-  color:var(--text);
+.day-note-edit:hover::before, .day-note-view:hover::before, .day-note-delete:hover::before{
+  transform:translateX(100%);
 }
 
 .day-note-edit:hover{
-  background:linear-gradient(90deg,rgba(11,108,255,0.15),rgba(0,212,255,0.1));
-  border-color:rgba(11,108,255,0.3);
-  transform:scale(1.1);
-  box-shadow:0 2px 8px rgba(11,108,255,0.2);
+  background:linear-gradient(135deg,rgba(11,108,255,0.25),rgba(0,212,255,0.15));
+  border-color:rgba(11,108,255,0.4);
+  transform:scale(1.15);
+  box-shadow:0 4px 12px rgba(11,108,255,0.3);
 }
 
 .day-note-view:hover{
-  background:linear-gradient(90deg,rgba(0,212,255,0.15),rgba(11,108,255,0.1));
-  border-color:rgba(0,212,255,0.3);
-  transform:scale(1.1);
-  box-shadow:0 2px 8px rgba(0,212,255,0.2);
+  background:linear-gradient(135deg,rgba(0,212,255,0.25),rgba(11,108,255,0.15));
+  border-color:rgba(0,212,255,0.4);
+  transform:scale(1.15);
+  box-shadow:0 4px 12px rgba(0,212,255,0.3);
 }
 
 .day-note-delete:hover{
-  background:rgba(255,68,68,0.15);
-  border-color:rgba(255,68,68,0.3);
-  transform:scale(1.1);
-  box-shadow:0 2px 8px rgba(255,68,68,0.2);
+  background:linear-gradient(135deg,rgba(255,68,68,0.25),rgba(255,100,100,0.15));
+  border-color:rgba(255,68,68,0.4);
+  transform:scale(1.15);
+  box-shadow:0 4px 12px rgba(255,68,68,0.25);
 }
 
 /* Aside */
@@ -205,7 +235,7 @@ a{color:inherit;text-decoration:none}
 .day-schedule.weekend{border-left-color:#888}
 .day-name{font-weight:700;color:var(--text-strong);margin-bottom:8px;font-size:14px;word-wrap:break-word;overflow-wrap:break-word}
 .day-lessons{display:flex;flex-direction:column;gap:8px}
-.day-lesson{display:flex;gap:6px;padding:8px;border-radius:10px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);word-wrap:break-word;overflow-wrap:break-word;transition:all .2s ease}
+.day-lesson{display:flex;gap:6px;padding:8px;border-radius:10px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);word-wrap:break-word;overflow-wrap:break-word;transition:all .2s ease;align-items:center}
 .day-lesson:hover{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.04)}
 .day-lesson-number{font-weight:700;color:var(--muted);min-width:24px;flex-shrink:0}
 .day-lesson-info{flex:1;min-width:0}
@@ -216,7 +246,7 @@ a{color:inherit;text-decoration:none}
 
 /* Teachers */
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.teacher-card{padding:14px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid var(--border);transition:transform .18s ease,box-shadow .18s ease;word-wrap:break-word;overflow-wrap:break-word;cursor:pointer}
+.teacher-card{padding:14px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid var(--border);transition:transform .18s ease,box-shadow .18s ease}
 .teacher-card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.65);background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))}
 .teacher-card .teacher-card-name{font-weight:700;color:var(--text-strong);word-wrap:break-word;overflow-wrap:break-word}
 .teacher-card .teacher-card-info{color:var(--muted);font-size:13px;margin-top:6px;word-wrap:break-word;overflow-wrap:break-word}
@@ -226,7 +256,7 @@ a{color:inherit;text-decoration:none}
 .subjects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
 .subject-card{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--border);display:flex;gap:10px;align-items:center;word-wrap:break-word;overflow-wrap:break-word;transition:all .2s ease}
 .subject-card:hover{transform:translateY(-4px);background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));box-shadow:0 6px 16px rgba(2,6,23,0.5)}
-.subject-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(90deg,var(--primary),var(--primary-2));display:inline-flex;align-items:center;justify-content:center;color:#021428;font-size:18px;flex-shrink:0}
+.subject-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(90deg,var(--primary),var(--primary-2));display:inline-flex;align-items:center;justify-content:center;color:#021430;font-size:20px;flex-shrink:0}
 .subject-name{font-weight:600;color:var(--text-strong);font-size:14px;word-wrap:break-word;overflow-wrap:break-word}
 
 /* About / Contact */
@@ -253,8 +283,8 @@ a{color:inherit;text-decoration:none}
   top:0;
   width:100%;
   height:100%;
-  background-color:rgba(0,0,0,0.6);
-  backdrop-filter:blur(4px);
+  background-color:rgba(0,0,0,0.7);
+  backdrop-filter:blur(6px);
   animation:fadeIn .2s ease;
   overflow-y:auto;
 }
@@ -276,14 +306,14 @@ a{color:inherit;text-decoration:none}
 }
 
 .modal-content{
-  background:linear-gradient(180deg,rgba(10,18,34,0.98),rgba(5,16,41,0.95));
+  background:linear-gradient(180deg,rgba(10,18,34,0.99),rgba(5,16,41,0.97));
   margin:5% auto;
-  padding:28px;
+  padding:32px;
   border:1px solid var(--border);
-  border-radius:20px;
+  border-radius:24px;
   width:90%;
   max-width:600px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow:0 25px 70px rgba(0,0,0,0.85),inset 0 1px 0 rgba(255,255,255,0.1);
   backdrop-filter:blur(var(--glass-blur));
   animation:slideUp .3s ease;
   position:relative;
@@ -295,33 +325,36 @@ a{color:inherit;text-decoration:none}
   font-size:28px;
   font-weight:bold;
   cursor:pointer;
-  transition:color .2s ease;
-  background:transparent;
-  border:none;
-  padding:0;
-  width:32px;
-  height:32px;
+  transition:all .2s ease;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:4px 10px;
+  border-radius:8px;
   display:flex;
   align-items:center;
   justify-content:center;
+  width:40px;
+  height:40px;
+  line-height:1;
 }
 
 .close:hover, .close:focus{
   color:var(--text-strong);
-  background:rgba(255,255,255,0.05);
-  border-radius:8px;
+  background:rgba(255,255,255,0.08);
+  border-color:rgba(255,255,255,0.15);
+  transform:scale(1.1);
 }
 
 .modal h2{
-  margin:0 0 16px 0;
-  font-size:20px;
+  margin:0 0 20px 0;
+  font-size:24px;
   color:var(--text-strong);
   word-wrap:break-word;
   overflow-wrap:break-word;
 }
 
 .modal p{
-  margin:6px 0;
+  margin:8px 0;
   color:var(--muted);
   font-size:14px;
   word-wrap:break-word;
@@ -330,11 +363,11 @@ a{color:inherit;text-decoration:none}
 
 .modal textarea{
   width:100%;
-  padding:12px;
-  margin:16px 0;
+  padding:14px;
+  margin:18px 0;
   border:1px solid var(--border);
-  border-radius:12px;
-  background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));
   color:var(--text);
   font-family:inherit;
   font-size:14px;
@@ -342,43 +375,46 @@ a{color:inherit;text-decoration:none}
   min-height:200px;
   max-height:400px;
   transition:all .2s ease;
+  line-height:1.6;
 }
 
 .modal textarea:focus{
   outline:none;
   border-color:var(--primary);
-  background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));
-  box-shadow:0 0 20px rgba(11,108,255,0.15);
+  background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04));
+  box-shadow:0 0 24px rgba(11,108,255,0.2);
 }
 
 .modal-buttons{
   display:flex;
-  gap:10px;
-  margin-top:20px;
+  gap:12px;
+  margin-top:24px;
   flex-wrap:wrap;
 }
 
 .modal button{
   flex:1;
   min-width:120px;
-  padding:10px 16px;
+  padding:12px 18px;
   border-radius:12px;
   border:none;
   font-weight:600;
   cursor:pointer;
-  transition:all .2s ease;
+  transition:all .2s cubic-bezier(0.2, 0.8, 0.2, 1);
   font-size:14px;
+  position:relative;
+  overflow:hidden;
 }
 
 #saveNoteBtn, #closeNoteBtn{
   background:linear-gradient(90deg,var(--primary),var(--primary-2));
   color:#01203b;
-  box-shadow:0 4px 16px var(--accent-glow);
+  box-shadow:0 6px 20px var(--accent-glow);
 }
 
 #saveNoteBtn:hover, #closeNoteBtn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 6px 24px var(--accent-glow);
+  transform:translateY(-3px);
+  box-shadow:0 8px 28px var(--accent-glow);
 }
 
 #closeNoteBtn{
@@ -389,8 +425,81 @@ a{color:inherit;text-decoration:none}
 }
 
 #closeNoteBtn:hover{
-  background:rgba(255,255,255,0.04);
-  border-color:rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(255,255,255,0.12);
+}
+
+/* Note View Modal - Special Styling */
+#viewNoteModal .modal-content{
+  max-width:700px;
+}
+
+.note-view-box{
+  background:linear-gradient(135deg,rgba(11,108,255,0.08),rgba(0,212,255,0.04));
+  border:1px solid rgba(11,108,255,0.2);
+  border-radius:14px;
+  padding:20px;
+  margin:20px 0;
+  line-height:1.8;
+  color:var(--text);
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  max-height:400px;
+  overflow-y:auto;
+  position:relative;
+}
+
+.note-view-box::-webkit-scrollbar{
+  width:8px;
+}
+
+.note-view-box::-webkit-scrollbar-track{
+  background:rgba(255,255,255,0.03);
+  border-radius:4px;
+}
+
+.note-view-box::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(11,108,255,0.4),rgba(0,212,255,0.3));
+  border-radius:4px;
+}
+
+.note-view-box::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,rgba(11,108,255,0.6),rgba(0,212,255,0.5));
+}
+
+.note-empty{
+  color:var(--muted);
+  font-style:italic;
+  text-align:center;
+  padding:20px;
+}
+
+.note-info{
+  display:flex;
+  gap:16px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.note-info-item{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.note-info-label{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+
+.note-info-value{
+  color:var(--text-strong);
+  font-weight:600;
+  font-size:14px;
 }
 
 /* Teacher Modal */
@@ -402,44 +511,47 @@ a{color:inherit;text-decoration:none}
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:40px;
-  height:40px;
-  border-radius:10px;
+  width:44px;
+  height:44px;
+  border-radius:12px;
   font-size:18px;
-  transition:all .2s ease;
-  margin-right:8px;
+  transition:all .2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  margin-right:10px;
   text-decoration:none;
   cursor:pointer;
+  border:1px solid transparent;
+  position:relative;
+  overflow:hidden;
 }
 
 .teacher-btn-call{
-  background:linear-gradient(90deg,rgba(52,168,83,0.2),rgba(52,168,83,0.1));
-  border:1px solid rgba(52,168,83,0.3);
+  background:linear-gradient(135deg,rgba(52,168,83,0.25),rgba(52,168,83,0.12));
+  border:1px solid rgba(52,168,83,0.4);
   color:#52a853;
 }
 
 .teacher-btn-call:hover{
-  background:linear-gradient(90deg,rgba(52,168,83,0.3),rgba(52,168,83,0.2));
-  border-color:rgba(52,168,83,0.5);
-  transform:scale(1.1);
-  box-shadow:0 4px 12px rgba(52,168,83,0.2);
+  background:linear-gradient(135deg,rgba(52,168,83,0.4),rgba(52,168,83,0.25));
+  border-color:rgba(52,168,83,0.6);
+  transform:translateY(-4px);
+  box-shadow:0 8px 24px rgba(52,168,83,0.25);
 }
 
 .teacher-btn-whatsapp{
-  background:linear-gradient(90deg,rgba(37,211,102,0.2),rgba(37,211,102,0.1));
-  border:1px solid rgba(37,211,102,0.3);
+  background:linear-gradient(135deg,rgba(37,211,102,0.25),rgba(37,211,102,0.12));
+  border:1px solid rgba(37,211,102,0.4);
   color:#25d366;
 }
 
 .teacher-btn-whatsapp:hover{
-  background:linear-gradient(90deg,rgba(37,211,102,0.3),rgba(37,211,102,0.2));
-  border-color:rgba(37,211,102,0.5);
-  transform:scale(1.1);
-  box-shadow:0 4px 12px rgba(37,211,102,0.2);
+  background:linear-gradient(135deg,rgba(37,211,102,0.4),rgba(37,211,102,0.25));
+  border-color:rgba(37,211,102,0.6);
+  transform:translateY(-4px);
+  box-shadow:0 8px 24px rgba(37,211,102,0.25);
 }
 
 .teacher-btn-disabled{
-  background:rgba(255,255,255,0.03);
+  background:rgba(255,255,255,0.04);
   border:1px solid rgba(255,255,255,0.1);
   color:var(--muted);
   cursor:not-allowed;
@@ -467,7 +579,7 @@ a{color:inherit;text-decoration:none}
   .section-head{flex-direction:column}
   .controls-row{gap:8px}
   .duration-compact{width:100%}
-  .modal-content{width:95%;margin:20% auto;padding:20px}
+  .modal-content{width:95%;margin:20% auto;padding:24px}
 }
 
 /* Responsive - Small Mobile */
@@ -505,10 +617,11 @@ a{color:inherit;text-decoration:none}
   .mobile-link{font-size:16px;padding:10px}
   .footer-inner{flex-direction:column;gap:8px}
   .footer-nav a{margin:0;padding:2px 8px}
-  .modal-content{width:90%;padding:16px;margin:30% auto}
-  .modal h2{font-size:18px}
+  .modal-content{width:90%;padding:20px;margin:30% auto}
+  .modal h2{font-size:20px}
   .modal textarea{min-height:150px;font-size:13px}
-  .modal button{font-size:13px;padding:8px 12px}
+  .modal button{font-size:13px;padding:10px 14px}
+  .note-view-btn, .note-edit-btn, .note-delete-btn{min-width:32px;height:32px;padding:6px 8px;font-size:14px}
 }
 
 /* Responsive - Extra Small Mobile */
@@ -534,7 +647,7 @@ a{color:inherit;text-decoration:none}
   .tab{padding:5px 8px;font-size:11px}
   .section-head h2{font-size:16px}
   .container{padding:8px}
-  .note-edit-btn, .note-view-btn, .note-delete-btn{min-width:28px;height:28px;padding:4px 6px}
+  .note-edit-btn, .note-view-btn, .note-delete-btn{min-width:28px;height:28px;padding:4px 6px;font-size:12px}
   .day-note-edit, .day-note-view, .day-note-delete{min-width:24px;height:24px;font-size:10px}
 }
 
