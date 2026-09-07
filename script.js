@@ -143,6 +143,9 @@ const saveNoteBtn = document.getElementById('saveNoteBtn');
 const closeNoteBtn = document.getElementById('closeNoteBtn');
 const closeBtn = document.querySelector('#noteModal .close');
 
+const viewNoteModal = document.getElementById('viewNoteModal');
+const viewNoteCloseBtn = document.querySelector('#viewNoteModal .close');
+
 const teacherModal = document.getElementById('teacherModal');
 const teacherCloseBtn = document.querySelector('#teacherModal .close');
 
@@ -232,11 +235,25 @@ function deleteNote(dayOfWeek, lessonNum) {
     updateFullSchedule();
 }
 
-function viewNote(dayOfWeek, lessonNum) {
+function closeViewNoteModal() {
+    viewNoteModal.style.display = 'none';
+}
+
+function viewNote(dayOfWeek, lessonNum, lessonName) {
     const noteKey = `note_${dayOfWeek}_${lessonNum}`;
     const note = notes[noteKey];
     if (note) {
-        alert(note);
+        const dayName = dayNames[dayOfWeek === 0 ? 6 : dayOfWeek - 1];
+        document.querySelector('#viewNoteModal h2').textContent = `📖 ${dayName} - Урок ${lessonNum}`;
+        
+        document.getElementById('viewNoteDayLabel').textContent = dayName;
+        document.getElementById('viewNoteLessonLabel').textContent = `${lessonNum} урок`;
+        document.getElementById('viewNoteSubjectLabel').textContent = lessonName;
+        
+        const noteContent = document.getElementById('noteViewContent');
+        noteContent.innerHTML = `<p>${note.replace(/\n/g, '<br>')}</p>`;
+        
+        viewNoteModal.style.display = 'block';
     }
 }
 
@@ -244,8 +261,13 @@ if (saveNoteBtn) saveNoteBtn.addEventListener('click', saveNote);
 if (closeNoteBtn) closeNoteBtn.addEventListener('click', closeNoteModal);
 if (closeBtn) closeBtn.addEventListener('click', closeNoteModal);
 
+if (viewNoteCloseBtn) {
+    viewNoteCloseBtn.addEventListener('click', closeViewNoteModal);
+}
+
 window.addEventListener('click', (event) => {
     if (event.target === modal) closeNoteModal();
+    if (event.target === viewNoteModal) closeViewNoteModal();
 });
 
 function loadDurationPreference() {
@@ -490,7 +512,7 @@ function updateTodaySchedule() {
         if (noteViewBtn) {
             noteViewBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                viewNote(dayOfWeek, lesson.num);
+                viewNote(dayOfWeek, lesson.num, lessonName);
             });
         }
 
@@ -578,7 +600,8 @@ function updateFullSchedule() {
             btn.addEventListener('click', (e) => {
                 const dayIdx = parseInt(btn.getAttribute('data-day'));
                 const lessonNum = parseInt(btn.getAttribute('data-lesson'));
-                viewNote(dayIdx, lessonNum);
+                const lessonName = weekSchedule[dayIdx].lessons[lessonNum - 1];
+                viewNote(dayIdx, lessonNum, lessonName);
             });
         });
 
