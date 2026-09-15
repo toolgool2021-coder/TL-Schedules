@@ -61,9 +61,9 @@ function formatTime(minutes) {
 
 let lessonTimes = generateLessonTimes();
 
-// Данные загружаются из Gist (window.scheduleData)
+// Данные загружаются из встроенного скрипта (window.scheduleData)
 const teachersDatabase = window.scheduleData?.teachersDatabase || {};
-const weekSchedule = window.scheduleData?.weekSchedule || {};
+const weekSchedule = window.scheduleData?.weekSchedule || [];
 
 const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 
@@ -307,7 +307,7 @@ document.getElementById('downloadOfflineBtn').addEventListener('click', function
 function isWeekend() {
     const now = new Date();
     const dayOfWeek = now.getDay();
-    return dayOfWeek === 6;
+    return dayOfWeek === 0 || dayOfWeek === 6; // Воскресенье или Суббота
 }
 
 function getCurrentLessonInfo() {
@@ -344,6 +344,9 @@ function getCurrentLessonInfo() {
 }
 
 function getNextLesson(dayOfWeek, currentLessonNum) {
+    if (!weekSchedule || !weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1]) {
+        return null;
+    }
     const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
     if (currentLessonNum < lessons.length) {
         return {
@@ -408,23 +411,27 @@ function updateDisplay() {
         statusEl.textContent = '🌟 Время отдыхать!';
         nextLessonEl.textContent = 'Отдыхаем! 🏠';
     } else if (lessonInfo.hasLesson && lessonInfo.currentLesson) {
-        const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
-        const lessonName = lessons[lessonInfo.currentLesson.num - 1] || 'Урок';
-        document.getElementById('currentLesson').textContent = `Урок ${lessonInfo.currentLesson.num}: ${lessonName}`;
-        statusEl.textContent = '🔴 Сейчас идёт урок';
-        const nextLesson = getNextLesson(dayOfWeek, lessonInfo.currentLesson.num);
-        if (nextLesson) {
-            nextLessonEl.textContent = `Следующий урок: Урок ${nextLesson.num} - ${nextLesson.name}`;
-        } else {
-            nextLessonEl.textContent = 'Следующий урок: Домой! 🏠';
+        if (weekSchedule && weekSchedule.length > 0) {
+            const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
+            const lessonName = lessons[lessonInfo.currentLesson.num - 1] || 'Урок';
+            document.getElementById('currentLesson').textContent = `Урок ${lessonInfo.currentLesson.num}: ${lessonName}`;
+            statusEl.textContent = '🔴 Сейчас идёт урок';
+            const nextLesson = getNextLesson(dayOfWeek, lessonInfo.currentLesson.num);
+            if (nextLesson) {
+                nextLessonEl.textContent = `Следующий урок: Урок ${nextLesson.num} - ${nextLesson.name}`;
+            } else {
+                nextLessonEl.textContent = 'Следующий урок: Домой! 🏠';
+            }
         }
         const endTimeMinutes = lessonInfo.currentLesson.endMinutes;
         const timeLeftMinutes = endTimeMinutes - lessonInfo.currentMinutes;
         updateTimer(timeLeftMinutes);
     } else if (lessonInfo.nextLesson) {
-        const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
-        const nextLessonName = lessons[lessonInfo.nextLesson.num - 1] || 'Урок';
-        document.getElementById('currentLesson').textContent = `Урок ${lessonInfo.nextLesson.num}: ${nextLessonName}`;
+        if (weekSchedule && weekSchedule.length > 0) {
+            const lessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
+            const nextLessonName = lessons[lessonInfo.nextLesson.num - 1] || 'Урок';
+            document.getElementById('currentLesson').textContent = `Урок ${lessonInfo.nextLesson.num}: ${nextLessonName}`;
+        }
         const startTimeMinutes = lessonInfo.nextLesson.startMinutes;
         const timeLeftMinutes = startTimeMinutes - lessonInfo.currentMinutes;
         const hours = Math.floor(timeLeftMinutes / 60);
@@ -478,9 +485,14 @@ function updateTodaySchedule() {
         return;
     }
 
+    if (!weekSchedule || !weekSchedule.length) {
+        scheduleList.innerHTML = '<div class="no-lessons">Данные расписания не загружены</div>';
+        return;
+    }
+
     const todayLessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
 
-    if (todayLessons.length === 0) {
+    if (!todayLessons || todayLessons.length === 0) {
         scheduleList.innerHTML = '<div class="no-lessons">Нет занятий</div>';
         return;
     }
@@ -563,10 +575,17 @@ function updateFullSchedule() {
         return;
     }
     
+    if (!weekSchedule || !weekSchedule.length) {
+        weekScheduleDiv.innerHTML = '<div class="schedule-unavailable"><div class="unavailable-text">Данные расписания не загружены</div></div>';
+        return;
+    }
+    
     weekScheduleDiv.innerHTML = '';
 
     for (let day = 0; day < 7; day++) {
         const dayInfo = weekSchedule[day];
+        if (!dayInfo) continue;
+        
         const dayDiv = document.createElement('div');
         dayDiv.className = 'day-schedule';
         
@@ -575,7 +594,7 @@ function updateFullSchedule() {
         }
 
         let lessonsHtml = '';
-        if (dayInfo.lessons.length === 0) {
+        if (!dayInfo.lessons || dayInfo.lessons.length === 0) {
             lessonsHtml = '<div class="no-lessons">Выходной день</div>';
         } else {
             for (let i = 0; i < dayInfo.lessons.length; i++) {
@@ -659,7 +678,7 @@ function initTechBreak() {
         <div class="tech-break-card">
             <div class="tech-break-icon">☕</div>
             <div class="tech-break-title">Технический перерыв</div>
-            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немного...</div>
+            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немно[...]
         </div>
     `;
     
