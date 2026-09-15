@@ -368,11 +368,24 @@ function getKyrgyzstanTime() {
 
 // Функция для обновления времени Кыргызстана на странице
 function updateKyrgyzstanTime() {
-    if (!SHOW_KYRGYZSTAN_TIME) return;
+    if (!SHOW_KYRGYZSTAN_TIME) {
+        // Скрыть блок если отключено
+        const timeBlock = document.getElementById('kyrgyzstanTimeBlock');
+        if (timeBlock) {
+            timeBlock.style.display = 'none';
+        }
+        return;
+    }
     
     const timeEl = document.getElementById('kyrgyzstanTime');
+    const timeBlock = document.getElementById('kyrgyzstanTimeBlock');
+    
     if (timeEl) {
         timeEl.textContent = getKyrgyzstanTime();
+    }
+    
+    if (timeBlock) {
+        timeBlock.style.display = 'flex';
     }
 }
 
@@ -646,7 +659,7 @@ function initTechBreak() {
         <div class="tech-break-card">
             <div class="tech-break-icon">☕</div>
             <div class="tech-break-title">Технический перерыв</div>
-            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немного.</div>
+            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немного...</div>
         </div>
     `;
     
