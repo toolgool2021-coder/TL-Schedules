@@ -1,3 +1,23 @@
+// ===== НАСТРОЙКИ САЙТА =====
+// Здесь размещаются все основные настройки. Измени только значения true/false или параметры!
+
+// Показывать ли недельное расписание на странице
+// true - показывать расписание на неделю
+// false - скрыть расписание на неделю, показать информационный блок
+const SHOW_WEEK_SCHEDULE = true;
+
+// Включить технический перерыв
+// false - сайт работает нормально
+// true - показать уведомление о техническом перерыве
+const TECH_BREAK = false;
+
+// Показывать ли текущее время Кыргызстана рядом с таймером
+// true - показывать время и часовой пояс
+// false - скрыть блок времени
+const SHOW_KYRGYZSTAN_TIME = true;
+
+// ===== КОНЕЦ НАСТРОЕК =====
+
 let lessonDuration = 45;
 
 const baseStartTime = 480;
@@ -334,6 +354,28 @@ function getNextLesson(dayOfWeek, currentLessonNum) {
     return null;
 }
 
+// Функция для получения текущего времени Кыргызстана (UTC+6)
+function getKyrgyzstanTime() {
+    const now = new Date();
+    const kyrgyzTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bishkek' }));
+    
+    const hours = String(kyrgyzTime.getHours()).padStart(2, '0');
+    const minutes = String(kyrgyzTime.getMinutes()).padStart(2, '0');
+    const seconds = String(kyrgyzTime.getSeconds()).padStart(2, '0');
+    
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+// Функция для обновления времени Кыргызстана на странице
+function updateKyrgyzstanTime() {
+    if (!SHOW_KYRGYZSTAN_TIME) return;
+    
+    const timeEl = document.getElementById('kyrgyzstanTime');
+    if (timeEl) {
+        timeEl.textContent = getKyrgyzstanTime();
+    }
+}
+
 function updateDisplay() {
     const now = new Date();
     const dateStr = now.toLocaleDateString('ru-RU');
@@ -391,17 +433,21 @@ function updateDisplay() {
 
     updateTodaySchedule();
     updateFullSchedule();
+    updateKyrgyzstanTime();
 }
 
+// Обновленная функция таймера с минутами и секундами
 function updateTimer(minutes) {
     if (minutes < 0) {
-        document.getElementById('timerValue').textContent = '00:00:00';
+        document.getElementById('timerValue').textContent = '00:00';
         return;
     }
-    const hours = Math.floor(minutes / 60);
-    const mins = Math.floor(minutes % 60);
-    const secs = Math.floor((minutes % 1) * 60);
-    const timerStr = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    const totalSeconds = Math.floor(minutes * 60);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    
+    const timerStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     document.getElementById('timerValue').textContent = timerStr;
 }
 
@@ -491,6 +537,19 @@ function updateTodaySchedule() {
 
 function updateFullSchedule() {
     const weekScheduleDiv = document.getElementById('weekSchedule');
+    
+    // Если расписание отключено, показываем информационный блок
+    if (!SHOW_WEEK_SCHEDULE) {
+        weekScheduleDiv.innerHTML = `
+            <div class="schedule-unavailable">
+                <div class="unavailable-icon">📋</div>
+                <div class="unavailable-title">Расписание временно не доступно</div>
+                <div class="unavailable-text">Недельное расписание сейчас отключено.</div>
+            </div>
+        `;
+        return;
+    }
+    
     weekScheduleDiv.innerHTML = '';
 
     for (let day = 0; day < 7; day++) {
@@ -577,6 +636,32 @@ function updateFullSchedule() {
     }
 }
 
+// Функция для управления техническим перерывом
+function initTechBreak() {
+    if (!TECH_BREAK) return;
+    
+    const techBreakOverlay = document.createElement('div');
+    techBreakOverlay.className = 'tech-break-overlay';
+    techBreakOverlay.innerHTML = `
+        <div class="tech-break-card">
+            <div class="tech-break-icon">☕</div>
+            <div class="tech-break-title">Технический перерыв</div>
+            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немного.</div>
+        </div>
+    `;
+    
+    document.body.appendChild(techBreakOverlay);
+    document.body.style.overflow = 'hidden';
+}
+
 loadDurationPreference();
 updateDisplay();
-setInterval(updateDisplay, 1000);
+
+// Основной интервал обновления (каждую секунду)
+setInterval(() => {
+    updateDisplay();
+    updateKyrgyzstanTime();
+}, 1000);
+
+// Инициализируем технический перерыв
+initTechBreak();
