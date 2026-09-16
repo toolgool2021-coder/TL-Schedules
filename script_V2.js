@@ -13,10 +13,21 @@ function initTelegramBanner() {
     return;
   }
 
-  // Отслеживание нажатия
+  // Отслеживание нажатия с задержкой до конца анимации
   telegramLink.addEventListener('click', function(e) {
-    console.log('✅ Переход в Telegram');
+    e.preventDefault();
+    
+    // Добавляем класс для активной анимации
+    this.classList.add('clicked');
+    console.log('✅ Нажата кнопка Telegram');
     trackTelegramClick();
+    
+    // Ждём конца анимации (2s) перед переходом
+    setTimeout(() => {
+      const href = this.getAttribute('href');
+      window.open(href, '_blank');
+      this.classList.remove('clicked');
+    }, 2000);
   });
 
   // Отслеживание наведения
@@ -97,7 +108,7 @@ function getTelegramStats() {
  * Адаптирует поведение в зависимости от устройства
  */
 function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  return /Android|webOS|iPhone|iPad|iPok|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
 /**
