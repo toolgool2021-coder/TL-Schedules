@@ -62,8 +62,8 @@ function formatTime(minutes) {
 let lessonTimes = generateLessonTimes();
 
 // Данные загружаются из встроенного скрипта (window.scheduleData)
-const teachersDatabase = window.scheduleData?.teachersDatabase || {};
-const weekSchedule = window.scheduleData?.weekSchedule || [];
+let teachersDatabase = window.scheduleData?.teachersDatabase || {};
+let weekSchedule = window.scheduleData?.weekSchedule || [];
 
 const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 
@@ -266,6 +266,27 @@ function updateDurationButtons() {
     });
 }
 
+// Переключение табов (Сегодня/Неделя)
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        const view = this.dataset.view;
+        const scheduleColumn = document.querySelector('.schedule-column');
+        const weekScheduleDiv = document.getElementById('weekSchedule');
+        
+        if (view === 'today') {
+            scheduleColumn.style.display = 'flex';
+            weekScheduleDiv.style.display = 'none';
+        } else {
+            scheduleColumn.style.display = 'none';
+            weekScheduleDiv.style.display = 'grid';
+        }
+    });
+});
+
+// Кнопки длительности урока
 document.querySelectorAll('.duration-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         lessonDuration = parseInt(this.dataset.duration);
@@ -276,7 +297,25 @@ document.querySelectorAll('.duration-btn').forEach(btn => {
     });
 });
 
-document.getElementById('downloadOfflineBtn').addEventListener('click', function() {
+// Кнопка скачивания оффлайн версии
+document.getElementById('downloadOfflineBtn')?.addEventListener('click', function() {
+    downloadOfflineVersion();
+});
+
+// Кнопки быстрых действий
+const qaButtons = document.querySelectorAll('.quick-actions .btn');
+qaButtons.forEach((btn, index) => {
+    if (index === 0) {
+        // Скачать оффлайн
+        btn.addEventListener('click', downloadOfflineVersion);
+    } else if (index === 1) {
+        // Печать
+        btn.addEventListener('click', printSchedule);
+    }
+});
+
+// Функция загрузки оффлайн версии
+function downloadOfflineVersion() {
     fetch('https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/download/offline.html')
         .then(response => {
             if (!response.ok) {
@@ -295,6 +334,7 @@ document.getElementById('downloadOfflineBtn').addEventListener('click', function
             URL.revokeObjectURL(link.href);
         })
         .catch(error => {
+            console.warn('Ошибка загрузки с GitHub, попытка локальной версии:', error);
             const link = document.createElement('a');
             link.href = 'download/offline.html';
             link.download = 'TL-Schedules-Offline.html';
@@ -302,7 +342,43 @@ document.getElementById('downloadOfflineBtn').addEventListener('click', function
             link.click();
             document.body.removeChild(link);
         });
-});
+}
+
+// Функция печати расписания
+function printSchedule() {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    const scheduleList = document.getElementById('scheduleList').innerHTML;
+    const weekSchedule = document.getElementById('weekSchedule').innerHTML;
+    
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Расписание TL School</title>
+                <meta charset="utf-8">
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h2 { color: #0b6cff; }
+                    .lesson { margin: 10px 0; padding: 10px; border-left: 4px solid #0b6cff; background: #f5f5f5; }
+                    .time { color: #999; font-size: 12px; }
+                    @media print {
+                        body { margin: 10px; }
+                        .lesson { page-break-inside: avoid; }
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>TL School - Расписание</h1>
+                <h2>Сегодня</h2>
+                <div>${scheduleList}</div>
+                <hr>
+                <h2>Неделя</h2>
+                <div>${weekSchedule}</div>
+                <script>window.print();</script>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
 
 function isWeekend() {
     const now = new Date();
@@ -372,7 +448,6 @@ function getKyrgyzstanTime() {
 // Функция для обновления времени Кыргызстана на странице
 function updateKyrgyzstanTime() {
     if (!SHOW_KYRGYZSTAN_TIME) {
-        // Скрыть блок если отключено
         const timeBlock = document.getElementById('kyrgyzstanTimeBlock');
         if (timeBlock) {
             timeBlock.style.display = 'none';
@@ -486,11 +561,11 @@ function updateTodaySchedule() {
     }
 
     if (!weekSchedule || !weekSchedule.length) {
-        scheduleList.innerHTML = '<div class="no-lessons">Данные расписания не загружены</div>';
+        scheduleList.innerHTML = '<div class="no-lessons">⚠️ Данные расписания не загружены. Проверьте Gist!</div>';
         return;
     }
 
-    const todayLessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1].lessons;
+    const todayLessons = weekSchedule[dayOfWeek === 0 ? 6 : dayOfWeek - 1]?.lessons;
 
     if (!todayLessons || todayLessons.length === 0) {
         scheduleList.innerHTML = '<div class="no-lessons">Нет занятий</div>';
@@ -563,7 +638,6 @@ function updateTodaySchedule() {
 function updateFullSchedule() {
     const weekScheduleDiv = document.getElementById('weekSchedule');
     
-    // Если расписание отключено, показываем информационный блок
     if (!SHOW_WEEK_SCHEDULE) {
         weekScheduleDiv.innerHTML = `
             <div class="schedule-unavailable">
@@ -576,7 +650,7 @@ function updateFullSchedule() {
     }
     
     if (!weekSchedule || !weekSchedule.length) {
-        weekScheduleDiv.innerHTML = '<div class="schedule-unavailable"><div class="unavailable-text">Данные расписания не загружены</div></div>';
+        weekScheduleDiv.innerHTML = '<div class="schedule-unavailable"><div class="unavailable-text">⚠️ Данные расписания не загружены</div></div>';
         return;
     }
     
@@ -678,7 +752,7 @@ function initTechBreak() {
         <div class="tech-break-card">
             <div class="tech-break-icon">☕</div>
             <div class="tech-break-title">Технический перерыв</div>
-            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немно[...]
+            <div class="tech-break-message">Сайт временно приостановлен на технический перерыв.<br>Пожалуйста, подождите немного...</div>
         </div>
     `;
     
@@ -686,8 +760,32 @@ function initTechBreak() {
     document.body.style.overflow = 'hidden';
 }
 
+// Функция для загрузки данных расписания с Gist с повторными попытками
+function loadScheduleData() {
+    const maxRetries = 3;
+    let retries = 0;
+
+    function attempt() {
+        // Ждём загрузки встроенного скрипта
+        if (window.scheduleData) {
+            teachersDatabase = window.scheduleData?.teachersDatabase || {};
+            weekSchedule = window.scheduleData?.weekSchedule || [];
+            console.log('✅ Данные расписания загружены:', { weekSchedule, teachersDatabase });
+            updateDisplay();
+        } else if (retries < maxRetries) {
+            retries++;
+            console.log(`⏳ Попытка загрузки ${retries}/${maxRetries}`);
+            setTimeout(attempt, 500);
+        } else {
+            console.warn('❌ Не удалось загрузить данные расписания');
+        }
+    }
+
+    attempt();
+}
+
 loadDurationPreference();
-updateDisplay();
+loadScheduleData();
 
 // Основной интервал обновления (каждую секунду)
 setInterval(() => {
@@ -697,3 +795,5 @@ setInterval(() => {
 
 // Инициализируем технический перерыв
 initTechBreak();
+
+console.log('✅ script.js загружен успешно');
