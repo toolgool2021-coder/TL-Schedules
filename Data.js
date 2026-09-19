@@ -15,7 +15,8 @@ window.scheduleData = {
     "География": { name: "-", cabinet: "41", phone: null },
     "Человек и общество": { name: "-", cabinet: "19", phone: null },
     "ЧИО": { name: "-", cabinet: "19", phone: null },
-    "Астрономия": { name: "-", cabinet: "39", phone: null }
+    "Астрономия": { name: "-", cabinet: "39", phone: null },
+    "Свободное время": { name: "-", cabinet: "-", phone: null },
   },
   weekSchedule: [
     {
