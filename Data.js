@@ -9,13 +9,13 @@ window.scheduleData = {
     "История": { name: "-", cabinet: "19", phone: null },
     "Иностранный язык": { name: "-", cabinet: "33", phone: null },
     "Кыргыз тили": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
+    "Кыргыз литература": { name: "Томоева Гульзат", cabinet: "37", phone: "+996558337747" },
     "Биология": { name: "-", cabinet: "30", phone: null },
     "ДП": { name: "-", cabinet: "7", phone: null },
-    "География": { name: "Эсенгулова Жыпаргул", cabinet: "41", phone: "+996559312013" },
-    "Человек и общество": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996505904065" },
-    "ЧИО": { name: "Корголдоев Алишер", cabinet: "19", phone: "+996505904065" },
-    "Астрономия": { name: "Рубцов Андрей", cabinet: "39", phone: "+996776979884" },
-    "Свободное время": { name: "-", cabinet: "-", phone: null }
+    "География": { name: "-", cabinet: "41", phone: null },
+    "Человек и общество": { name: "-", cabinet: "19", phone: null },
+    "ЧИО": { name: "-", cabinet: "19", phone: null },
+    "Астрономия": { name: "-", cabinet: "39", phone: null }
   },
   weekSchedule: [
     {
