@@ -1,3 +1,43 @@
+// ===== ГЛОБАЛЬНАЯ КОНФИГУРАЦИЯ =====
+// Все основные настройки находятся здесь
+window.appConfig = {
+  // Показывать ли недельное расписание
+  SHOW_WEEK_SCHEDULE: true,
+
+  // Включить технический перерыв
+  TECH_BREAK: false,
+
+  // Показывать ли время Кыргызстана
+  SHOW_KYRGYZSTAN_TIME: true,
+
+  // Длительность уроков по умолчанию
+  DEFAULT_LESSON_DURATION: 45,
+
+  // Базовое время начала (в минутах от 00:00)
+  BASE_START_TIME: 480, // 8:00
+
+  // Фиксированные времена уроков (для 45 минут)
+  lessonTimesFixed: [
+    { num: 1, start: "8:00", startMinutes: 480, end: "8:45", endMinutes: 525 },
+    { num: 2, start: "8:50", startMinutes: 530, end: "9:35", endMinutes: 575 },
+    { num: 3, start: "9:40", startMinutes: 580, end: "10:25", endMinutes: 625 },
+    { num: 4, start: "10:40", startMinutes: 640, end: "11:25", endMinutes: 685 },
+    { num: 5, start: "11:30", startMinutes: 690, end: "12:15", endMinutes: 735 },
+    { num: 6, start: "12:20", startMinutes: 740, end: "13:05", endMinutes: 785 }
+  ],
+
+  // Названия дней недели
+  dayNames: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
+
+  // Целевые значения для счётчиков статистики
+  stats: {
+    students: 150,
+    teachers: 35,
+    subjects: 14
+  }
+};
+
+// ===== ДАННЫЕ РАСПИСАНИЯ =====
 window.scheduleData = {
   teachersDatabase: {
     "Физкультура": { name: "-", cabinet: "спорт зал", phone: null },
