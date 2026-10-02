@@ -1,35 +1,18 @@
 // ===== НАСТРОЙКИ САЙТА =====
-// Здесь размещаются все основные настройки. Измени только значения true/false или параметры!
+// Все настройки находятся в Data.js в window.appConfig
+// Здесь мы только читаем значения из файла данных
 
-// Показывать ли недельное расписание на странице
-// true - показывать расписание на неделю
-// false - скрыть расписание на неделю, показать информационный блок
-const SHOW_WEEK_SCHEDULE = true;
+const appConfig = window.appConfig || {};
 
-// Включить технический перерыв
-// false - сайт работает нормально
-// true - показать уведомление о техническом перерыве
-const TECH_BREAK = false;
+// Получаем настройки из Data.js
+const SHOW_WEEK_SCHEDULE = appConfig.SHOW_WEEK_SCHEDULE ?? true;
+const TECH_BREAK = appConfig.TECH_BREAK ?? false;
+const SHOW_KYRGYZSTAN_TIME = appConfig.SHOW_KYRGYZSTAN_TIME ?? true;
 
-// Показывать ли текущее время Кыргызстана рядом с таймером
-// true - показывать время и часовой пояс
-// false - скрыть блок времени
-const SHOW_KYRGYZSTAN_TIME = true;
-
-// ===== КОНЕЦ НАСТРОЕК =====
-
-let lessonDuration = 45;
-
-const baseStartTime = 480;
-
-const lessonTimesFixed = [
-    { num: 1, start: "8:00", startMinutes: 480, end: "8:45", endMinutes: 525 },
-    { num: 2, start: "8:50", startMinutes: 530, end: "9:35", endMinutes: 575 },
-    { num: 3, start: "9:40", startMinutes: 580, end: "10:25", endMinutes: 625 },
-    { num: 4, start: "10:40", startMinutes: 640, end: "11:25", endMinutes: 685 },
-    { num: 5, start: "11:30", startMinutes: 690, end: "12:15", endMinutes: 735 },
-    { num: 6, start: "12:20", startMinutes: 740, end: "13:05", endMinutes: 785 }
-];
+let lessonDuration = appConfig.DEFAULT_LESSON_DURATION ?? 45;
+const baseStartTime = appConfig.BASE_START_TIME ?? 480;
+const lessonTimesFixed = appConfig.lessonTimesFixed || [];
+const dayNames = appConfig.dayNames || [];
 
 function generateLessonTimes() {
     if (lessonDuration === 45) {
@@ -38,7 +21,7 @@ function generateLessonTimes() {
 
     const lessons = [];
     let currentTime = baseStartTime;
-    let breakDuration = 5;
+    let breakDuration = appConfig.BREAK_DURATION ?? 5;
 
     for (let i = 1; i <= 6; i++) {
         lessons.push({
@@ -61,11 +44,9 @@ function formatTime(minutes) {
 
 let lessonTimes = generateLessonTimes();
 
-// Данные загружаются из встроенного скрипта (window.scheduleData)
+// Данные загружаются из Data.js
 let teachersDatabase = window.scheduleData?.teachersDatabase || {};
 let weekSchedule = window.scheduleData?.weekSchedule || [];
-
-const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 
 function getDayInfo(dayOfWeek) {
     const index = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
@@ -285,7 +266,6 @@ function updateDurationButtons() {
     });
 }
 
-// Переключение табов (Сегодня/Неделя)
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', function() {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -305,7 +285,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     });
 });
 
-// Кнопки длительности урока
 document.querySelectorAll('.duration-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         lessonDuration = parseInt(this.dataset.duration);
@@ -316,24 +295,19 @@ document.querySelectorAll('.duration-btn').forEach(btn => {
     });
 });
 
-// Кнопка скачивания оффлайн версии
 document.getElementById('downloadOfflineBtn')?.addEventListener('click', function() {
     downloadOfflineVersion();
 });
 
-// Кнопки быстрых действий
 const qaButtons = document.querySelectorAll('.quick-actions .btn');
 qaButtons.forEach((btn, index) => {
     if (index === 0) {
-        // Скачать оффлайн
         btn.addEventListener('click', downloadOfflineVersion);
     } else if (index === 1) {
-        // Печать
         btn.addEventListener('click', printSchedule);
     }
 });
 
-// Функция загрузки оффлайн версии
 function downloadOfflineVersion() {
     fetch('https://raw.githubusercontent.com/toolgool2021-coder/TL-Schedules/main/download/offline.html')
         .then(response => {
@@ -363,7 +337,6 @@ function downloadOfflineVersion() {
         });
 }
 
-// Функция печати расписания
 function printSchedule() {
     const printWindow = window.open('', '', 'height=600,width=800');
     const scheduleList = document.getElementById('scheduleList').innerHTML;
@@ -461,7 +434,6 @@ function getNextLesson(dayOfWeek, currentLessonNum) {
     return null;
 }
 
-// Функция для получения текущего времени Кыргызстана (UTC+6)
 function getKyrgyzstanTime() {
     const now = new Date();
     const kyrgyzTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bishkek' }));
@@ -473,7 +445,6 @@ function getKyrgyzstanTime() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
-// Функция для обновления времени Кыргызстана на странице
 function updateKyrgyzstanTime() {
     if (!SHOW_KYRGYZSTAN_TIME) {
         const timeBlock = document.getElementById('kyrgyzstanTimeBlock');
@@ -557,7 +528,6 @@ function updateDisplay() {
     updateKyrgyzstanTime();
 }
 
-// Обновленная функция таймера с минутами и секундами
 function updateTimer(minutes) {
     if (minutes < 0) {
         document.getElementById('timerValue').textContent = '00:00';
@@ -776,7 +746,6 @@ function updateFullSchedule() {
     }
 }
 
-// Функция для управления техническим перерывом
 function initTechBreak() {
     if (!TECH_BREAK) return;
 
@@ -794,13 +763,11 @@ function initTechBreak() {
     document.body.style.overflow = 'hidden';
 }
 
-// Функция для заг��узки данных расписания с Gist с повторными попытками
 function loadScheduleData() {
     const maxRetries = 3;
     let retries = 0;
 
     function attempt() {
-        // Ждём загрузки встроенного скрипта
         if (window.scheduleData) {
             teachersDatabase = window.scheduleData?.teachersDatabase || {};
             weekSchedule = window.scheduleData?.weekSchedule || [];
@@ -818,16 +785,70 @@ function loadScheduleData() {
     attempt();
 }
 
+function setStatCounters() {
+    const stats = appConfig.stats || { students: 0, teachers: 0, subjects: 0 };
+
+    const studentEl = document.getElementById('stat-students');
+    const teacherEl = document.getElementById('stat-teachers-2');
+    const subjectEl = document.getElementById('stat-subjects-2');
+
+    if (studentEl) {
+        studentEl.setAttribute('data-target', String(stats.students));
+        studentEl.textContent = '0';
+    }
+
+    if (teacherEl) {
+        teacherEl.setAttribute('data-target', String(stats.teachers));
+        teacherEl.textContent = '0';
+    }
+
+    if (subjectEl) {
+        subjectEl.setAttribute('data-target', String(stats.subjects));
+        subjectEl.textContent = '0';
+    }
+}
+
+function animateCounter(element, target, duration = 2000) {
+    let current = 0;
+    const increment = target / (duration / 16);
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, 16);
+}
+
+function startCounters() {
+    const counters = document.querySelectorAll('.animated-counter');
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target')) || 0;
+        animateCounter(counter, target, 2000);
+    });
+}
+
+setStatCounters();
 loadDurationPreference();
 loadScheduleData();
 
-// Основной интервал обновления (каждую секунду)
 setInterval(() => {
     updateDisplay();
     updateKyrgyzstanTime();
 }, 1000);
 
-// Инициализируем технический перерыв
 initTechBreak();
+
+window.addEventListener('load', startCounters);
+
+setInterval(() => {
+    document.querySelectorAll('.animated-counter').forEach(counter => {
+        counter.textContent = '0';
+        const target = parseInt(counter.getAttribute('data-target')) || 0;
+        animateCounter(counter, target, 2000);
+    });
+}, 120000);
 
 console.log('✅ script.js загружен успешно');
