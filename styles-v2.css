@@ -11,6 +11,75 @@
    Стили для анимированной обводки с огоньками
 */
 
+/* Контейнер поддержки баннера */
+.telegram-banner-container support-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 32px 0;
+  position: relative;
+  perspective: 1000px;
+}
+
+/* Основной поддержки блок с анимированной обводкой */
+.telegram-banner-container support-banner::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    #00d4ff 0%,
+    #0099ff 25%,
+    #00d4ff 50%,
+    #0099ff 75%,
+    #00d4ff 100%
+  );
+  background-size: 300% 300%;
+  animation: telegramBorderGlow 4s ease infinite;
+  z-index: -1;
+  opacity: 0.8;
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+}
+
+
+/* Контейнер лицензия баннера */
+.telegram-banner-container license-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 32px 0;
+  position: relative;
+  perspective: 1000px;
+}
+
+/* Основной лицензии блок с анимированной обводкой */
+.telegram-banner-container license-banner::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    #00d4ff 0%,
+    #0099ff 25%,
+    #00d4ff 50%,
+    #0099ff 75%,
+    #00d4ff 100%
+  );
+  background-size: 300% 300%;
+  animation: telegramBorderGlow 4s ease infinite;
+  z-index: -1;
+  opacity: 0.8;
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+}
+
 /* Контейнер телеграм баннера */
 .telegram-banner-container {
   display: flex;
