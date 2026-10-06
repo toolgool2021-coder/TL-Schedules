@@ -138,6 +138,94 @@
   transform: scale(1.15) rotate(5deg);
 }
 
+/* ===== СТИЛИ ДЛЯ РАЗНЫХ КНОПОК БАННЕРА =====
+   Разные цвета и дизайны для каждой кнопки
+*/
+
+/* ЛИЦЕНЗИЯ - Фиолетовый / Золотой дизайн */
+.telegram-banner-container:nth-child(2)::before {
+  background: linear-gradient(
+    90deg,
+    #b366ff 0%,
+    #7d4fc4 25%,
+    #b366ff 50%,
+    #7d4fc4 75%,
+    #b366ff 100%
+  );
+  box-shadow: 0 0 30px rgba(179, 102, 255, 0.6);
+}
+
+.telegram-banner-container:nth-child(2) .telegram-link {
+  background: linear-gradient(135deg, rgba(61, 18, 99, 0.95), rgba(50, 10, 80, 0.98));
+  color: #d9b3ff;
+  border-color: rgba(179, 102, 255, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(179, 102, 255, 0.2);
+}
+
+.telegram-banner-container:nth-child(2) .telegram-link:hover {
+  background: linear-gradient(135deg, rgba(80, 30, 120, 0.98), rgba(70, 20, 100, 0.99));
+  color: #ffffff;
+  border-color: rgba(179, 102, 255, 0.7);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 8px 24px rgba(179, 102, 255, 0.4),
+    0 0 20px rgba(123, 79, 196, 0.3);
+}
+
+.telegram-banner-container:nth-child(2) .telegram-icon {
+  filter: drop-shadow(0 2px 4px rgba(179, 102, 255, 0.4));
+}
+
+.telegram-banner-container:nth-child(2) .telegram-link:hover .telegram-icon {
+  filter: drop-shadow(0 4px 8px rgba(179, 102, 255, 0.6));
+}
+
+/* ПОДДЕРЖАТЬ - Красный / Розовый дизайн (сердце) */
+.telegram-banner-container:nth-child(3)::before {
+  background: linear-gradient(
+    90deg,
+    #ff4081 0%,
+    #e91e63 25%,
+    #ff4081 50%,
+    #e91e63 75%,
+    #ff4081 100%
+  );
+  box-shadow: 0 0 30px rgba(255, 64, 129, 0.6);
+}
+
+.telegram-banner-container:nth-child(3) .telegram-link {
+  background: linear-gradient(135deg, rgba(99, 18, 50, 0.95), rgba(80, 10, 40, 0.98));
+  color: #ff99c8;
+  border-color: rgba(255, 64, 129, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(255, 64, 129, 0.2);
+}
+
+.telegram-banner-container:nth-child(3) .telegram-link:hover {
+  background: linear-gradient(135deg, rgba(120, 30, 70, 0.98), rgba(100, 20, 50, 0.99));
+  color: #ffffff;
+  border-color: rgba(255, 64, 129, 0.7);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 8px 24px rgba(255, 64, 129, 0.4),
+    0 0 20px rgba(233, 30, 99, 0.3);
+}
+
+.telegram-banner-container:nth-child(3) .telegram-icon {
+  filter: drop-shadow(0 2px 4px rgba(255, 64, 129, 0.4));
+}
+
+.telegram-banner-container:nth-child(3) .telegram-link:hover .telegram-icon {
+  filter: drop-shadow(0 4px 8px rgba(255, 64, 129, 0.6));
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+/* Анимация биения сердца */
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1.15) rotate(0deg); }
+  25% { transform: scale(1.25) rotate(-2deg); }
+  75% { transform: scale(1.25) rotate(2deg); }
+}
+
 /* Пульсирующий эффект текста */
 @keyframes textPulse {
   0%, 100% {
