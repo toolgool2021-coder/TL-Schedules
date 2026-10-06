@@ -143,7 +143,7 @@
 */
 
 /* ЛИЦЕНЗИЯ - Фиолетовый / Золотой дизайн */
-.telegram-banner-container:nth-child(2)::before {
+.license-banner::before {
   background: linear-gradient(
     90deg,
     #b366ff 0%,
@@ -155,14 +155,14 @@
   box-shadow: 0 0 30px rgba(179, 102, 255, 0.6);
 }
 
-.telegram-banner-container:nth-child(2) .telegram-link {
+.license-banner .telegram-link {
   background: linear-gradient(135deg, rgba(61, 18, 99, 0.95), rgba(50, 10, 80, 0.98));
   color: #d9b3ff;
   border-color: rgba(179, 102, 255, 0.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(179, 102, 255, 0.2);
 }
 
-.telegram-banner-container:nth-child(2) .telegram-link:hover {
+.license-banner .telegram-link:hover {
   background: linear-gradient(135deg, rgba(80, 30, 120, 0.98), rgba(70, 20, 100, 0.99));
   color: #ffffff;
   border-color: rgba(179, 102, 255, 0.7);
@@ -172,16 +172,16 @@
     0 0 20px rgba(123, 79, 196, 0.3);
 }
 
-.telegram-banner-container:nth-child(2) .telegram-icon {
+.license-banner .telegram-icon {
   filter: drop-shadow(0 2px 4px rgba(179, 102, 255, 0.4));
 }
 
-.telegram-banner-container:nth-child(2) .telegram-link:hover .telegram-icon {
+.license-banner .telegram-link:hover .telegram-icon {
   filter: drop-shadow(0 4px 8px rgba(179, 102, 255, 0.6));
 }
 
 /* ПОДДЕРЖАТЬ - Красный / Розовый дизайн (сердце) */
-.telegram-banner-container:nth-child(3)::before {
+.support-banner::before {
   background: linear-gradient(
     90deg,
     #ff4081 0%,
@@ -193,14 +193,14 @@
   box-shadow: 0 0 30px rgba(255, 64, 129, 0.6);
 }
 
-.telegram-banner-container:nth-child(3) .telegram-link {
+.support-banner .telegram-link {
   background: linear-gradient(135deg, rgba(99, 18, 50, 0.95), rgba(80, 10, 40, 0.98));
   color: #ff99c8;
   border-color: rgba(255, 64, 129, 0.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(255, 64, 129, 0.2);
 }
 
-.telegram-banner-container:nth-child(3) .telegram-link:hover {
+.support-banner .telegram-link:hover {
   background: linear-gradient(135deg, rgba(120, 30, 70, 0.98), rgba(100, 20, 50, 0.99));
   color: #ffffff;
   border-color: rgba(255, 64, 129, 0.7);
@@ -210,11 +210,11 @@
     0 0 20px rgba(233, 30, 99, 0.3);
 }
 
-.telegram-banner-container:nth-child(3) .telegram-icon {
+.support-banner .telegram-icon {
   filter: drop-shadow(0 2px 4px rgba(255, 64, 129, 0.4));
 }
 
-.telegram-banner-container:nth-child(3) .telegram-link:hover .telegram-icon {
+.support-banner .telegram-link:hover .telegram-icon {
   filter: drop-shadow(0 4px 8px rgba(255, 64, 129, 0.6));
   animation: heartBeat 0.6s ease-in-out;
 }
