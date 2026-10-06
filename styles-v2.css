@@ -81,7 +81,7 @@
 }
 
 /* Контейнер телеграм баннера */
-.telegram-banner-container {
+.telegram-banner-container telegram-banner {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,7 +91,7 @@
 }
 
 /* Основной телеграм блок с анимированной обводкой */
-.telegram-banner-container::before {
+.telegram-banner-container telegram-banner::before {
   content: '';
   position: absolute;
   top: -3px;
