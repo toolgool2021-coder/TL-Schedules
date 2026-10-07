@@ -115,7 +115,7 @@
 }
 
 /* Анимация движения огоньков по обводке */
-@keyframes telegramBorderGlow {
+@keyframes telegramBorderGlowlin {
   0% {
     background-position: 0% 50%;
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 108, 255, 0.3);
@@ -137,7 +137,7 @@
 }
 
 /* Ссылка телеграма */
-.telegram-link {
+.telegram-linklin {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -161,7 +161,7 @@
 }
 
 /* Shimmer эффект на ссылке */
-.telegram-link::before {
+.telegram-linklin::before {
   content: '';
   position: absolute;
   top: 0;
@@ -172,12 +172,12 @@
   transition: left 0.6s ease;
 }
 
-.telegram-link:hover::before {
+.telegram-linklin:hover::before {
   left: 100%;
 }
 
 /* Эффект при наведении */
-.telegram-link:hover {
+.telegram-linklin:hover {
   background: linear-gradient(135deg, rgba(15, 30, 60, 0.98), rgba(10, 20, 50, 0.99));
   color: #ffffff;
   border-color: rgba(0, 212, 255, 0.6);
@@ -194,7 +194,7 @@
 }
 
 /* Иконка телеграма */
-.telegram-icon {
+.telegram-iconlin {
   width: 28px;
   height: 28px;
   display: inline-block;
@@ -202,7 +202,116 @@
   transition: all 0.35s ease;
 }
 
-.telegram-link:hover .telegram-icon {
+.telegram-linklin:hover .telegram-iconlin {
+  filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.5));
+  transform: scale(1.15) rotate(5deg);
+}
+
+/* Пульсирующий эффект текста */
+@keyframes textPulse {
+  0%, 100% {
+    text-shadow: 0 0 0 rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+  }
+}
+
+.telegram-linklin:hover {
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+=
+
+/* Анимация движения огоньков по обводке */
+@keyframes telegramBorderGlowlin {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 108, 255, 0.3);
+  }
+  25% {
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 45px rgba(0, 108, 255, 0.4);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 50px rgba(0, 108, 255, 0.5);
+  }
+  75% {
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 45px rgba(0, 108, 255, 0.4);
+  }
+  100% {
+    background-position: 200% 50%;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 108, 255, 0.3);
+  }
+}
+
+/* Ссылка телеграма */
+.telegram-linklin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 18px 36px;
+  background: linear-gradient(135deg, rgba(10, 18, 34, 0.95), rgba(5, 16, 41, 0.98));
+  color: #00d4ff;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 108, 255, 0.15);
+  overflow: hidden;
+}
+
+/* Shimmer эффект на ссылке */
+.telegram-linklin::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.telegram-linklin:hover::before {
+  left: 100%;
+}
+
+/* Эффект при наведении */
+.telegram-linklin:hover {
+  background: linear-gradient(135deg, rgba(15, 30, 60, 0.98), rgba(10, 20, 50, 0.99));
+  color: #ffffff;
+  border-color: rgba(0, 212, 255, 0.6);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 8px 24px rgba(0, 212, 255, 0.35),
+    0 0 20px rgba(0, 108, 255, 0.25);
+}
+
+/* Активное состояние */
+.telegram-linklin:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Иконка телеграма */
+.telegram-iconlin {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+  filter: drop-shadow(0 2px 4px rgba(0, 212, 255, 0.3));
+  transition: all 0.35s ease;
+}
+
+.telegram-linklin:hover .telegram-iconlin {
   filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.5));
   transform: scale(1.15) rotate(5deg);
 }
@@ -220,6 +329,116 @@
 .telegram-link:hover {
   animation: textPulse 2s ease-in-out infinite;
 }
+
+=
+
+/* Анимация движения огоньков по обводке */
+@keyframes telegramBorderGlowsup {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 108, 255, 0.3);
+  }
+  25% {
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 45px rgba(0, 108, 255, 0.4);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 50px rgba(0, 108, 255, 0.5);
+  }
+  75% {
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 45px rgba(0, 108, 255, 0.4);
+  }
+  100% {
+    background-position: 200% 50%;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 108, 255, 0.3);
+  }
+}
+
+/* Ссылка телеграма */
+.telegram-linksup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 18px 36px;
+  background: linear-gradient(135deg, rgba(10, 18, 34, 0.95), rgba(5, 16, 41, 0.98));
+  color: #00d4ff;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 108, 255, 0.15);
+  overflow: hidden;
+}
+
+/* Shimmer эффект на ссылке */
+.telegram-linksup::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.telegram-linksup:hover::before {
+  left: 100%;
+}
+
+/* Эффект при наведении */
+.telegram-link:hover {
+  background: linear-gradient(135deg, rgba(15, 30, 60, 0.98), rgba(10, 20, 50, 0.99));
+  color: #ffffff;
+  border-color: rgba(0, 212, 255, 0.6);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 8px 24px rgba(0, 212, 255, 0.35),
+    0 0 20px rgba(0, 108, 255, 0.25);
+}
+
+/* Активное состояние */
+.telegram-linksup:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Иконка телеграма */
+.telegram-iconsup {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+  filter: drop-shadow(0 2px 4px rgba(0, 212, 255, 0.3));
+  transition: all 0.35s ease;
+}
+
+.telegram-linksup:hover .telegram-iconsup {
+  filter: drop-shadow(0 4px 8px rgba(0, 212, 255, 0.5));
+  transform: scale(1.15) rotate(5deg);
+}
+
+/* Пульсирующий эффект текста */
+@keyframes textPulse {
+  0%, 100% {
+    text-shadow: 0 0 0 rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+  }
+}
+
+.telegram-linksup:hover {
+  animation: textPulse 2s ease-in-out infinite;
+}
+
 
 /* ===== СЕКУНДОМЕР И ВРЕМЯ КЫРГЫЗСТАНА =====
    Блок с таймером и временем, расположенный в герой-карточке
