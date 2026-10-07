@@ -12,7 +12,7 @@
 */
 
 /* Контейнер поддержки баннера */
-.telegram-banner-container support-banner {
+.telegram-banner-container-support-banner {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,7 +22,7 @@
 }
 
 /* Основной поддержки блок с анимированной обводкой */
-.telegram-banner-container support-banner::before {
+.telegram-banner-container-support-banner::before {
   content: '';
   position: absolute;
   top: -3px;
@@ -47,7 +47,7 @@
 
 
 /* Контейнер лицензия баннера */
-.telegram-banner-container license-banner {
+.telegram-banner-container-license-banner {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,7 +57,7 @@
 }
 
 /* Основной лицензии блок с анимированной обводкой */
-.telegram-banner-container license-banner::before {
+.telegram-banner-container-license-banner::before {
   content: '';
   position: absolute;
   top: -3px;
@@ -81,7 +81,7 @@
 }
 
 /* Контейнер телеграм баннера */
-.telegram-banner-container telegram-banner {
+.telegram-banner-container-telegram-banner {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,7 +91,7 @@
 }
 
 /* Основной телеграм блок с анимированной обводкой */
-.telegram-banner-container telegram-banner::before {
+.telegram-banner-container-telegram-banner::before {
   content: '';
   position: absolute;
   top: -3px;
