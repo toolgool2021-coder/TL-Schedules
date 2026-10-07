@@ -32,11 +32,11 @@
   border-radius: 16px;
   background: linear-gradient(
     90deg,
-    #00d4ff 0%,
-    #0099ff 25%,
-    #00d4ff 50%,
-    #0099ff 75%,
-    #00d4ff 100%
+    #ff2a6d 0%,
+    #ff0055 25%,
+    #ff2a6d 50%,
+    #ff0055 75%,
+    #ff2a6d 100%
   );
   background-size: 300% 300%;
   animation: telegramBorderGlow 4s ease infinite;
@@ -68,9 +68,9 @@
   background: linear-gradient(
     90deg,
     #00d4ff 0%,
-    #0099ff 25%,
+    #0055ff 25%,
     #00d4ff 50%,
-    #0099ff 75%,
+    #0055ff 75%,
     #00d4ff 100%
   );
   background-size: 300% 300%;
