@@ -1,31 +1,785 @@
 "use strict";
-const { appConfig, teachersDatabase, weekSchedule } = window.TL_APP_DATA;
-const $=id=>document.getElementById(id);
-let duration=45,selectedDay=(new Date().getDay()+6)%7,currentNoteKey=null,notes={};
-try{duration=Number(localStorage.getItem("tlAppDuration"))||45;notes=JSON.parse(localStorage.getItem("tlScheduleNotes")||"{}")||{}}catch(e){}
-if(![45,40,35].includes(duration))duration=45;
-function todayIndex(){return(new Date().getDay()+6)%7}
-function escapeHTML(v){return String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function timeAt(n){const h=Math.floor(n/60)%24,m=n%60;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")}
-function getTimes(){if(duration===45)return appConfig.lessonTimesFixed.map(t=>({start:t.start,end:t.end,a:t.startMinutes,b:t.endMinutes}));let out=[],cur=480;for(let i=0;i<6;i++){out.push({start:timeAt(cur),end:timeAt(cur+duration),a:cur,b:cur+duration});cur+=duration+5}return out}
-function noteKey(day,num){return"note_"+day+"_"+num}
-function renderTabs(){$("dayTabs").innerHTML=weekSchedule.map((d,i)=>`<button class="day-tab ${i===selectedDay?"active":""}" data-day="${i}"><small>${d.short}</small><strong>${i===todayIndex()?"•":i+1}</strong></button>`).join("");$("dayTabs").querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{selectedDay=Number(b.dataset.day);renderTabs();renderLessons()})}
-function renderLessons(){const list=$("lessonList"),day=weekSchedule[selectedDay]||{lessons:[]},times=getTimes(),now=new Date(),mins=now.getHours()*60+now.getMinutes(),isToday=selectedDay===todayIndex();$("selectedDayLabel").textContent=isToday?"Сегодня":day.name;if(!day.lessons.length){list.innerHTML='<div class="empty">☁<br><strong>На этот день уроков нет</strong><br><span class="muted">Можно немного отдохнуть</span></div>';return}list.innerHTML=day.lessons.map((name,i)=>{const t=times[i],key=noteKey(selectedDay,i+1),active=isToday&&mins>=t.a&&mins<t.b,past=isToday&&mins>=t.b;return`<article class="lesson-card ${active?"current":""} ${past?"past":""}" data-lesson="${i}"><div class="lesson-index">${String(i+1).padStart(2,"0")}</div><div class="lesson-main"><div class="lesson-name">${escapeHTML(name)}</div><div class="lesson-time">${t.start} – ${t.end}${active?" · Сейчас":""}</div></div><button class="mini-btn ${notes[key]?"has-note":""}" data-edit="${i}" title="Заметка">${notes[key]?"✎":"＋"}</button></article>`}).join("");list.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.edit);openNote(selectedDay,i+1,day.lessons[i])});list.querySelectorAll("[data-lesson]").forEach(card=>card.onclick=e=>{if(!e.target.closest("[data-edit]"))openTeacher(selectedDay,Number(card.dataset.lesson)+1)})}
-function renderWeek(){const times=getTimes();$("weekGrid").innerHTML=weekSchedule.map((d,i)=>`<article class="week-card ${i===todayIndex()?"today":""}"><div class="week-card-head"><div class="week-day-name">${d.name}</div>${i===todayIndex()?'<span class="today-label">СЕГОДНЯ</span>':""}</div>${d.lessons.length?d.lessons.map((s,j)=>`<div class="week-item"><span class="week-num">${j+1}</span><span class="week-subject">${escapeHTML(s)}</span><span class="week-time">${times[j].start}</span></div>`).join(""):'<div class="rest">День без занятий</div>'}</article>`).join("")}
-function clock(sec){const h=String(Math.floor(sec/3600)).padStart(2,"0"),m=String(Math.floor(sec%3600/60)).padStart(2,"0"),s=String(sec%60).padStart(2,"0");return`${h}:${m}:${s}`}
-function updateHero(){const now=new Date(),day=todayIndex(),mins=now.getHours()*60+now.getMinutes()+now.getSeconds()/60,times=getTimes(),lessons=weekSchedule[day]?.lessons||[];const hour=now.getHours();$("greeting").textContent=hour<5?"Доброй ночи":hour<12?"Доброе утро":hour<18?"Добрый день":"Добрый вечер";$("dateLine").textContent=now.toLocaleDateString("ru-RU",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · "+now.toLocaleTimeString("ru-RU");if(day>=5){$("currentLesson").textContent="Сегодня можно отдохнуть";$("lessonCaption").textContent="На сегодня уроки не запланированы";$("statusPill").textContent="✦ ВЫХОДНОЙ";$("heroEyebrow").textContent="ВРЕМЯ ДЛЯ СЕБЯ";$("timerValue").textContent="✦";$("timerLabel").textContent="Перезагрузка тоже важна";$("timerFrom").textContent="Отдых";$("timerTo").textContent="";$("progressBar").style.width="0%";return}const ci=times.findIndex(t=>mins>=t.a&&mins<t.b),ni=times.findIndex(t=>t.a>mins);let t=null,progress=0;if(ci>=0){t=times[ci];$("currentLesson").textContent="Урок "+(ci+1)+": "+(lessons[ci]||"Урок");$("lessonCaption").textContent="Занятие завершится в "+t.end;$("statusPill").textContent="● ИДЁТ УРОК";$("heroEyebrow").textContent="СЕЙЧАС";$("timerLabel").textContent="До конца урока";$("timerValue").textContent=clock(Math.max(0,Math.floor(t.b*60-now.getHours()*3600-now.getMinutes()*60-now.getSeconds())));progress=(mins-t.a)/(t.b-t.a)*100}else if(ni>=0){t=times[ni];$("currentLesson").textContent="Далее: "+(lessons[ni]||"Урок");$("lessonCaption").textContent="Начало в "+t.start+" · Урок "+(ni+1);$("statusPill").textContent="◷ СКОРО НАЧАЛО";$("heroEyebrow").textContent="СЛЕДУЮЩЕЕ СОБЫТИЕ";$("timerLabel").textContent="До начала следующего урока";$("timerValue").textContent=clock(Math.max(0,Math.floor(t.a*60-now.getHours()*3600-now.getMinutes()*60-now.getSeconds())))}else{$("currentLesson").textContent="Уроки на сегодня завершены";$("lessonCaption").textContent="Все занятия закончились";$("statusPill").textContent="✓ ГОТОВО";$("heroEyebrow").textContent="УЧЕБНЫЙ ДЕНЬ";$("timerLabel").textContent="Можно выдохнуть";$("timerValue").textContent="✓";progress=100} $("timerFrom").textContent=t?t.start:"08:00";$("timerTo").textContent=t?t.end:"13:05";$("progressBar").style.width=Math.max(0,Math.min(100,progress))+"%"}
-function openNote(day,num,name){currentNoteKey=noteKey(day,num);$("modalTitle").textContent=name||"Заметка";$("modalSubtitle").textContent=weekSchedule[day].name+" · Урок "+num+" · Сохраняется на устройстве";$("noteText").value=notes[currentNoteKey]||"";$("noteModal").classList.add("open");$("noteModal").setAttribute("aria-hidden","false");$("noteText").focus()}
-function closeNote(){$("noteModal").classList.remove("open");$("noteModal").setAttribute("aria-hidden","true");currentNoteKey=null}
-function showToast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),2200)}
-$("saveNote").onclick=()=>{if(!currentNoteKey)return;const val=$("noteText").value.trim();if(val)notes[currentNoteKey]=val;else delete notes[currentNoteKey];try{localStorage.setItem("tlScheduleNotes",JSON.stringify(notes))}catch(e){}closeNote();renderLessons();renderWeek();showToast("Заметка сохранена")};
-$("cancelNote").onclick=$("closeNoteBtn").onclick=closeNote;$("noteModal").onclick=e=>{if(e.target===$("noteModal"))closeNote()};
-function openTeacher(dayIndex,num){const name=weekSchedule[dayIndex]?.lessons?.[num-1],t=teachersDatabase[name];if(!t)return;$("teacherName").textContent=t.name||"Преподаватель";$("teacherSubject").textContent="📚 Предмет: "+name;$("teacherCabinet").textContent="🚪 Кабинет: "+(t.cabinet||"—");$("teacherPhone").textContent="☎️ "+(t.phone||"Не указан");$("teacherButtons").innerHTML=t.phone?`<a href="tel:${t.phone}">📞 Позвонить</a><a href="https://wa.me/${t.phone.replace(/\D/g,"")}" target="_blank" rel="noopener">💬 WhatsApp</a>`:"";$("teacherModal").classList.add("open");$("teacherModal").setAttribute("aria-hidden","false")}
-function closeTeacher(){$("teacherModal").classList.remove("open");$("teacherModal").setAttribute("aria-hidden","true")}
-$("teacherClose").onclick=closeTeacher;$("teacherModal").onclick=e=>{if(e.target===$("teacherModal"))closeTeacher()};document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeNote();closeTeacher()}});
-document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.toggle("active",x===b));if(b.dataset.target==="today"){selectedDay=todayIndex();renderTabs();renderLessons()}$(b.dataset.target).scrollIntoView({behavior:"smooth",block:"start"})});
-function setDuration(v){duration=v;try{localStorage.setItem("tlAppDuration",String(v))}catch(e){}$("durationSelect").value=String(v);$("durationButtons").querySelectorAll("button").forEach(b=>b.classList.toggle("active",Number(b.dataset.duration)===v));renderLessons();renderWeek();updateHero()}
-$("durationButtons").querySelectorAll("button").forEach(b=>b.onclick=()=>setDuration(Number(b.dataset.duration)));$("durationSelect").onchange=e=>setDuration(Number(e.target.value));
-$("settingsBtn").onclick=()=>{const s=$("settings");s.hidden=!s.hidden;$("settingsBtn").setAttribute("aria-expanded",String(!s.hidden));if(!s.hidden)s.scrollIntoView({behavior:"smooth",block:"center"})};
-$("resetNotes").onclick=()=>{if(!Object.keys(notes).length){showToast("Заметок пока нет");return}if(confirm("Удалить все заметки расписания?")){notes={};try{localStorage.removeItem("tlScheduleNotes")}catch(e){}renderLessons();renderWeek();showToast("Все заметки удалены")}};
-function initSnow(){const c=$("snowCanvas"),ctx=c.getContext("2d");if(!ctx)return;let w,h,flakes=[];function resize(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+"px";c.style.height=innerHeight+"px";flakes=Array.from({length:Math.min(65,Math.floor(innerWidth/7))},()=>({x:Math.random()*w,y:Math.random()*h,r:(Math.random()*2+1)*devicePixelRatio,s:(Math.random()*.65+.25)*devicePixelRatio,o:Math.random()*.45+.15}))}function draw(){ctx.clearRect(0,0,w,h);for(const f of flakes){ctx.beginPath();ctx.fillStyle="rgba(210,225,255,"+f.o+")";ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();f.y+=f.s;f.x+=Math.sin(f.y/Math.max(h,1)*Math.PI*2)*.3*devicePixelRatio;if(f.y>h)f.y=0;if(f.x>w)f.x=0;if(f.x<0)f.x=w}requestAnimationFrame(draw)}resize();addEventListener("resize",resize);if(!matchMedia("(prefers-reduced-motion: reduce)").matches)draw()} 
-renderTabs();renderLessons();renderWeek();setDuration(duration);updateHero();setInterval(()=>{updateHero();if(selectedDay===todayIndex())renderLessons()},1000);initSnow();
+
+const $ = id => document.getElementById(id);
+
+const {
+  appConfig: config,
+  teachersDatabase: teachers,
+  weekSchedule: week
+} = window.TL_APP_DATA;
+
+const esc = value => String(value ?? "").replace(
+  /[&<>"']/g,
+  c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c])
+);
+
+function read(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+// Сохраняем совместимость с заметками прежней версии.
+const savedNotes = read("tlScheduleNotes", {});
+
+let notes =
+  savedNotes &&
+  typeof savedNotes === "object" &&
+  !Array.isArray(savedNotes)
+    ? savedNotes
+    : {};
+
+let duration = Number(read("tlAppDuration", 45));
+
+if (![30, 35, 40, 45].includes(duration)) {
+  duration = 45;
+}
+
+let theme = read("tlTheme", "dark");
+let low = Boolean(read("tlLow", false));
+
+const motion = matchMedia("(prefers-reduced-motion: reduce)");
+
+let selected = localNow().day;
+let view = "day";
+let lastStamp = "";
+let noteId = "";
+let toastTimer;
+
+function persist(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    toast(
+      "Не удалось сохранить на устройстве. Данные доступны до закрытия страницы."
+    );
+    return false;
+  }
+}
+
+/* Время Кыргызстана независимо от часового пояса устройства */
+
+function localNow(date = new Date()) {
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Bishkek",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    })
+      .formatToParts(date)
+      .map(x => [x.type, x.value])
+  );
+
+  const calendar = new Date(
+    Date.UTC(+p.year, +p.month - 1, +p.day)
+  );
+
+  return {
+    day: (calendar.getUTCDay() + 6) % 7,
+    seconds: +p.hour * 3600 + +p.minute * 60 + +p.second,
+    date: calendar,
+    key: `${p.year}-${p.month}-${p.day}`,
+    hour: +p.hour
+  };
+}
+
+const hm = minutes =>
+  `${String(Math.floor(minutes / 60)).padStart(2, "0")}:` +
+  String(minutes % 60).padStart(2, "0");
+
+function times(count) {
+  let start = config.BASE_START_TIME;
+
+  return Array.from({ length: count }, (_, i) => {
+    const fixed =
+      duration === 45 &&
+      config.lessonTimesFixed[i];
+
+    const a = fixed ? fixed.startMinutes : start;
+    const b = fixed ? fixed.endMinutes : a + duration;
+
+    start = b + config.BREAK_DURATION;
+
+    return { a, b };
+  });
+}
+
+/* Текущее событие и ближайшее занятие */
+
+function state(now) {
+  const lessons = week[now.day].lessons;
+  const ts = times(lessons.length);
+  const s = now.seconds;
+
+  for (let i = 0; i < ts.length; i++) {
+    const { a, b } = ts[i];
+
+    if (s < a * 60) {
+      return {
+        kind: i ? "break" : "before",
+        day: now.day,
+        i,
+        target: a * 60,
+        start: i ? ts[i - 1].b * 60 : 0,
+        end: a * 60
+      };
+    }
+
+    if (s < b * 60) {
+      return {
+        kind: "lesson",
+        day: now.day,
+        i,
+        target: b * 60,
+        start: a * 60,
+        end: b * 60
+      };
+    }
+  }
+
+  for (let offset = 1; offset <= 7; offset++) {
+    const day = (now.day + offset) % 7;
+
+    if (week[day].lessons.length) {
+      return {
+        kind: lessons.length ? "done" : "rest",
+        day,
+        i: 0,
+        target: offset * 86400 + times(1)[0].a * 60,
+        offset
+      };
+    }
+  }
+
+  return { kind: "empty" };
+}
+
+function clock(seconds) {
+  seconds = Math.max(0, Math.floor(seconds));
+
+  const days = Math.floor(seconds / 86400);
+
+  return (
+    (days ? days + "д " : "") +
+    [
+      Math.floor(seconds % 86400 / 3600),
+      Math.floor(seconds % 3600 / 60),
+      seconds % 60
+    ]
+      .map(n => String(n).padStart(2, "0"))
+      .join(":")
+  );
+}
+
+function toast(text) {
+  $("toast").textContent = text;
+  $("toast").classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    $("toast").classList.remove("show");
+  }, 3500);
+}
+
+/* Тема и анимации */
+
+function applyAppearance() {
+  document.documentElement.dataset.theme =
+    theme === "light" ? "light" : "dark";
+
+  document.documentElement.classList.toggle(
+    "still",
+    low || motion.matches
+  );
+
+  $("themeBtn").textContent =
+    theme === "light" ? "☾" : "☀";
+
+  $("themeBtn").setAttribute(
+    "aria-label",
+    theme === "light"
+      ? "Включить тёмную тему"
+      : "Включить светлую тему"
+  );
+
+  $("lowMotion").checked = low;
+
+  document.querySelector('meta[name="theme-color"]').content =
+    theme === "light" ? "#f1f4fa" : "#0b101b";
+}
+
+/* Дни текущей недели */
+
+function renderTabs() {
+  const now = localNow();
+
+  $("days").innerHTML = week.map((d, i) => {
+    const date = new Date(now.date);
+
+    date.setUTCDate(
+      date.getUTCDate() - now.day + i
+    );
+
+    return `
+      <button
+        class="day ${selected === i ? "active" : ""}
+        ${i === now.day ? "is-today" : ""}"
+        data-day="${i}"
+        aria-pressed="${selected === i}"
+        aria-label="${esc(d.name)}"
+      >
+        <span>${esc(d.short)}</span>
+        <b>${date.getUTCDate()}</b>
+        <i></i>
+      </button>
+    `;
+  }).join("");
+}
+
+/* Карточки занятий */
+
+function renderSchedule() {
+  const now = localNow();
+  const current = state(now);
+
+  const query = $("search").value
+    .trim()
+    .toLocaleLowerCase("ru");
+
+  const list = view === "week"
+    ? week.map((_, i) => i)
+    : [selected];
+
+  $("scheduleTitle").textContent =
+    view === "week"
+      ? "Твоя неделя"
+      : week[selected].name;
+
+  $("days").hidden = view === "week";
+
+  $("schedule").classList.toggle(
+    "week-grid",
+    view === "week"
+  );
+
+  $("schedule").innerHTML = list.map(day => {
+    const lessons = week[day].lessons;
+    const ts = times(lessons.length);
+
+    const cards = lessons.map((subject, i) => {
+      const t = teachers[subject] || {};
+      const key = `note_${day}_${i + 1}`;
+
+      const note = typeof notes[key] === "string"
+        ? notes[key]
+        : "";
+
+      const searchable = [
+        subject,
+        t.name,
+        t.cabinet,
+        note
+      ].join(" ").toLocaleLowerCase("ru");
+
+      if (query && !searchable.includes(query)) {
+        return "";
+      }
+
+      const live =
+        day === now.day &&
+        current.kind === "lesson" &&
+        current.i === i;
+
+      const past =
+        day === now.day &&
+        now.seconds >= ts[i].b * 60;
+
+      const room = t.cabinet && t.cabinet !== "-"
+        ? "Каб. " + esc(t.cabinet)
+        : "Кабинет не указан";
+
+      return `
+        <article
+          class="lesson ${live ? "live" : ""}
+          ${past ? "past" : ""}"
+          style="--i:${i}"
+        >
+          <div class="lesson-number">
+            ${String(i + 1).padStart(2, "0")}
+          </div>
+
+          <button
+            class="subject"
+            data-teacher="${day}:${i}"
+          >
+            <strong>${esc(subject)}</strong>
+
+            <span>
+              ${hm(ts[i].a)} — ${hm(ts[i].b)} · ${room}
+            </span>
+
+            ${live ? "<em>Сейчас идёт</em>" : ""}
+          </button>
+
+          <button
+            class="note-button ${note ? "filled" : ""}"
+            data-note="${day}:${i}"
+            aria-label="Заметка: ${esc(subject)}"
+          >
+            ${note ? "✎" : "+"}
+          </button>
+
+          ${
+            note
+              ? `<p class="note-preview">${esc(note)}</p>`
+              : ""
+          }
+        </article>
+      `;
+    }).join("");
+
+    const empty = `
+      <div class="empty">
+        <span>${query ? "⌕" : "☁"}</span>
+        <h3>${query ? "Ничего не найдено" : "День для себя"}</h3>
+        <p>
+          ${
+            query
+              ? "Попробуй другой запрос."
+              : "На этот день занятий нет."
+          }
+        </p>
+      </div>
+    `;
+
+    return `
+      <section class="day-group">
+        ${
+          view === "week"
+            ? `
+              <h3>
+                ${esc(week[day].name)}
+                <small>${lessons.length} ур.</small>
+              </h3>
+            `
+            : ""
+        }
+
+        ${cards || empty}
+      </section>
+    `;
+  }).join("");
+
+  $("durationHint").textContent = duration === 45
+    ? "Обычные звонки · большая перемена после 3-го урока"
+    : "Сокращённые звонки · перемены по 5 минут";
+
+  document.querySelectorAll("[data-duration]").forEach(b => {
+    const active = +b.dataset.duration === duration;
+
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", String(active));
+  });
+}
+
+/* Обновление таймера без пересоздания карточек каждую секунду */
+
+function tick(force = false) {
+  const now = localNow();
+  const s = state(now);
+
+  const lessons = week[now.day].lessons;
+  const ts = times(lessons.length);
+
+  const subject = s.day === undefined
+    ? ""
+    : week[s.day].lessons[s.i];
+
+  $("greeting").textContent =
+    now.hour < 5 ? "Доброй ночи." :
+    now.hour < 12 ? "Доброе утро." :
+    now.hour < 18 ? "Добрый день." :
+    "Добрый вечер.";
+
+  $("date").textContent = new Intl.DateTimeFormat("ru-RU", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC"
+  }).format(now.date);
+
+  $("liveClock").textContent = clock(now.seconds);
+
+  const titles = {
+    lesson: subject,
+    break: "Перемена. Выдохни.",
+    before: "Начнём с хорошего.",
+    done: "На сегодня всё.",
+    rest: "Сегодня без уроков.",
+    empty: "Пока без занятий."
+  };
+
+  const tags = {
+    lesson: "СЕЙЧАС НА УРОКЕ",
+    break: "ВРЕМЯ ПЕРЕМЕНЫ",
+    before: "ДО ПЕРВОГО УРОКА",
+    done: "УЧЕБНЫЙ ДЕНЬ ЗАВЕРШЁН",
+    rest: "ВЫХОДНОЙ",
+    empty: "РАСПИСАНИЕ ПУСТО"
+  };
+
+  $("heroTitle").textContent = titles[s.kind];
+  $("status").textContent = tags[s.kind];
+
+  $("timer").textContent = s.target === undefined
+    ? "—"
+    : clock(s.target - now.seconds);
+
+  $("timerLabel").textContent = s.kind === "lesson"
+    ? "до конца урока"
+    : "до следующего занятия";
+
+  $("heroSub").textContent = s.kind === "lesson"
+    ? `Урок ${s.i + 1} из ${lessons.length} · кабинет ${
+        teachers[subject]?.cabinet || "не указан"
+      }`
+    : subject
+      ? `${
+          s.offset
+            ? week[s.day].name + " · "
+            : "Далее: "
+        }${subject} · ${hm(times(s.i + 1)[s.i].a)}`
+      : "Добавь занятия в data.js";
+
+  const fraction =
+    s.kind === "lesson" || s.kind === "break"
+      ? (now.seconds - s.start) / (s.end - s.start)
+      : s.kind === "done" ? 1 : 0;
+
+  $("progress").style.width =
+    `${Math.min(100, Math.max(0, fraction * 100))}%`;
+
+  const completed = ts.filter(
+    t => now.seconds >= t.b * 60
+  ).length;
+
+  $("completed").textContent =
+    `${completed} / ${lessons.length}`;
+
+  $("finish").textContent = ts.length
+    ? hm(ts[ts.length - 1].b)
+    : "Выходной";
+
+  $("noteCount").textContent = Object.values(notes).filter(
+    v => typeof v === "string" && v.trim()
+  ).length;
+
+  $("nextLesson").textContent = s.kind === "lesson"
+    ? lessons[s.i + 1] || "После урока свободен"
+    : subject || "Нет занятий";
+
+  const stamp =
+    `${now.key}|${s.kind}|${s.i}|${duration}`;
+
+  if (force || stamp !== lastStamp) {
+    const oldDay = lastStamp.split("|")[0];
+
+    if (oldDay && oldDay !== now.key) {
+      selected = now.day;
+    }
+
+    lastStamp = stamp;
+
+    renderTabs();
+    renderSchedule();
+  }
+}
+
+/* Заметки */
+
+function openNote(day, i) {
+  noteId = `note_${day}_${i + 1}`;
+
+  $("noteTitle").textContent = week[day].lessons[i];
+
+  $("noteCaption").textContent =
+    `${week[day].name} · урок ${i + 1}. ` +
+    "Постоянная заметка, хранится на этом устройстве.";
+
+  $("noteText").value = typeof notes[noteId] === "string"
+    ? notes[noteId]
+    : "";
+
+  $("noteDialog").showModal();
+  $("noteText").focus();
+}
+
+/* Преподаватели */
+
+function openTeacher(day, i) {
+  const subject = week[day].lessons[i];
+  const t = teachers[subject] || {};
+
+  $("teacherTitle").textContent = subject;
+
+  $("teacherName").textContent =
+    t.name && t.name !== "-"
+      ? t.name
+      : "Имя преподавателя пока не указано";
+
+  $("teacherRoom").textContent =
+    "Кабинет: " +
+    (
+      t.cabinet && t.cabinet !== "-"
+        ? t.cabinet
+        : "не указан"
+    );
+
+  const phone = String(t.phone || "")
+    .replace(/[^\d+]/g, "");
+
+  $("teacherPhone").textContent =
+    phone || "Телефон не указан";
+
+  $("teacherLinks").innerHTML = phone
+    ? `
+      <a class="primary" href="tel:${esc(phone)}">
+        Позвонить
+      </a>
+
+      <a
+        class="secondary"
+        href="https://wa.me/${phone.replace(/\D/g, "")}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        WhatsApp
+      </a>
+    `
+    : "";
+
+  $("teacherDialog").showModal();
+}
+
+/* Подключение интерфейса */
+
+$("days").addEventListener("click", e => {
+  const b = e.target.closest("[data-day]");
+  if (!b) return;
+
+  selected = +b.dataset.day;
+
+  renderTabs();
+  renderSchedule();
+});
+
+$("schedule").addEventListener("click", e => {
+  const b = e.target.closest("[data-note],[data-teacher]");
+  if (!b) return;
+
+  const isNote = b.hasAttribute("data-note");
+
+  const [d, i] = (
+    isNote ? b.dataset.note : b.dataset.teacher
+  ).split(":").map(Number);
+
+  if (isNote) {
+    openNote(d, i);
+  } else {
+    openTeacher(d, i);
+  }
+});
+
+$("durations").addEventListener("click", e => {
+  const b = e.target.closest("[data-duration]");
+  if (!b) return;
+
+  duration = +b.dataset.duration;
+
+  persist("tlAppDuration", duration);
+  tick(true);
+});
+
+function setView(value) {
+  view = value;
+
+  document.querySelectorAll("[data-view]").forEach(b => {
+    const active = b.dataset.view === view;
+
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", String(active));
+  });
+
+  renderSchedule();
+}
+
+document.querySelectorAll("[data-view]").forEach(b => {
+  b.onclick = () => setView(b.dataset.view);
+});
+
+$("todayBtn").onclick = () => {
+  selected = localNow().day;
+
+  setView("day");
+  renderTabs();
+
+  $("planner").scrollIntoView({
+    behavior: low || motion.matches ? "instant" : "smooth"
+  });
+};
+
+$("search").addEventListener("input", renderSchedule);
+
+$("saveNote").onclick = () => {
+  const text = $("noteText").value.trim();
+
+  if (text) {
+    notes[noteId] = text;
+  } else {
+    delete notes[noteId];
+  }
+
+  const saved = persist("tlScheduleNotes", notes);
+
+  $("noteDialog").close();
+  tick(true);
+
+  if (saved) {
+    toast(text ? "Заметка сохранена" : "Заметка удалена");
+  }
+};
+
+$("themeBtn").onclick = () => {
+  theme = theme === "dark" ? "light" : "dark";
+
+  persist("tlTheme", theme);
+  applyAppearance();
+};
+
+$("settingsBtn").onclick = () => {
+  $("settingsDialog").showModal();
+};
+
+$("lowMotion").onchange = e => {
+  low = e.target.checked;
+
+  persist("tlLow", low);
+  applyAppearance();
+};
+
+motion.addEventListener("change", applyAppearance);
+
+document.querySelectorAll("[data-close]").forEach(b => {
+  b.onclick = () => b.closest("dialog").close();
+});
+
+document.querySelectorAll("dialog").forEach(d => {
+  d.addEventListener("click", e => {
+    if (e.target !== d) return;
+
+    const r = d.getBoundingClientRect();
+
+    if (
+      e.clientX < r.left ||
+      e.clientX > r.right ||
+      e.clientY < r.top ||
+      e.clientY > r.bottom
+    ) {
+      d.close();
+    }
+  });
+});
+
+/* Скачивание расписания */
+
+$("exportBtn").onclick = () => {
+  const text = week.map((d, day) => {
+    const rows = d.lessons.map((name, i) => {
+      const t = times(d.lessons.length)[i];
+      const note = notes[`note_${day}_${i + 1}`];
+
+      return (
+        `${i + 1}. ${hm(t.a)}–${hm(t.b)} ${name}` +
+        (
+          typeof note === "string" && note
+            ? "\n   " + note
+            : ""
+        )
+      );
+    }).join("\n");
+
+    return d.name + "\n" + rows;
+  }).join("\n\n");
+
+  const url = URL.createObjectURL(
+    new Blob(
+      ["TL Schedules\nВремя: Кыргызстан\n\n" + text],
+      { type: "text/plain;charset=utf-8" }
+    )
+  );
+
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "TL-Schedules.txt";
+
+  document.body.append(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+/* Печать всей недели */
+
+$("printBtn").onclick = () => {
+  $("settingsDialog").close();
+  $("search").value = "";
+
+  setView("week");
+  window.print();
+};
+
+/* Состояние сети */
+
+function network() {
+  $("network").textContent = navigator.onLine
+    ? "Сеть доступна"
+    : "Нет сети · открытая страница работает";
+}
+
+addEventListener("online", network);
+addEventListener("offline", network);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    tick(true);
+  }
+});
+
+/* Запуск */
+
+applyAppearance();
+network();
+tick(true);
+
+setInterval(() => {
+  if (!document.hidden) {
+    tick();
+  }
+}, 1000);
